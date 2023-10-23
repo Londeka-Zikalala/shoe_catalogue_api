@@ -1,0 +1,19 @@
+<div class="header">Lubabalo's Shoe Shop</div>
+<div class="catalogue-selection">
+<label for="brand">Brand:</label>
+
+<label for="size">Size:</label>
+</div>
+
+<div class="shoe-list">
+    <h3>Pick A Shoe</h3>
+    {{#each allInStock}}
+    <ul>
+        <li>{{shoes.id}}</li>
+        <li>{{shoes.brand}}</li>
+        <li>{{shoes.size}}</li>
+        <li>{{shoes.color}}</li>
+        <li>{{shoes.price}}</li>
+    </ul>
+    {{/each}}
+</div>
