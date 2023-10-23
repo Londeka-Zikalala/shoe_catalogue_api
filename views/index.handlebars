@@ -7,13 +7,14 @@
 
 <div class="shoe-list">
     <h3>Pick A Shoe</h3>
-    {{#each allInStock}}
+    {{#each allInStore}}
     <ul>
-        <li>{{shoes.id}}</li>
-        <li>{{shoes.brand}}</li>
-        <li>{{shoes.size}}</li>
-        <li>{{shoes.color}}</li>
-        <li>{{shoes.price}}</li>
+        <li>Id:{{this.id}}</li>
+        <li>Brand:{{this.brand}}</li>
+        <li>Size:{{this.size}}</li>
+        <li>Color:{{this.color}}</li>
+        <li>Price: R{{this.price}}</li>
+        <li>In Stock:{{this.in_stock}}</li>
     </ul>
     {{/each}}
 </div>

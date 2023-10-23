@@ -34,6 +34,7 @@ app.set('views', './views');
 app.use(express.static('public'));
 
 app.get('/', shoesRoute.showIndex)
+app.get('index', shoesRoute.listAllShoes)
 
 
 

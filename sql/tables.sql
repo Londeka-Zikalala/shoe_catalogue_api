@@ -1,4 +1,3 @@
-CREATE SCHEMA  shoe_catalogue;
 
 CREATE TABLE  shoes (
     id SERIAL PRIMARY KEY,
