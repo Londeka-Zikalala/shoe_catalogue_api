@@ -4,27 +4,36 @@ async function fetchAllShoes(){
     
     return allShoes
 }
-async function fetchShoesBySize(shoeSize){
-    const shoesBySize = await db.any('SELECT * FROM shoes WHERE size=$1', [shoeSize]);
-    return shoesBySize
 
-}
-
-async function fetchShoesByBrand(brandName){
-    const shoesByBrand = await db.any('SELECT * FROM shoes WHERE brand=$1', [brandName]);
-    return shoesByBrand
-}
 
 async function fetchShoesByBrandAndSize(brandName, shoeSize){
-    const shoesByBrandAndSize = await db.any('SELECT * FROM shoes WHERE brand=$1 AND size=$2',[brandName,shoeSize])
-    return shoesByBrandAndSize
+    let shoes;
+    if(brandName === "" ){
+        shoes = await db.any('SELECT * FROM shoes WHERE size=$1', [shoeSize])
+    }
+    else if(shoeSize === "" ){
+        shoes =await db.any('SELECT * FROM shoes WHERE brand=$1', [brandName])
+    }
+    else if (brandName && shoeSize){
+        shoes = await db.any('SELECT * FROM shoes WHERE brand=$1 AND size=$2', [brandName,shoeSize])
+    }
+   
+    return shoes
 }
+
+async function addShoe(brandName, shoeSize, shoeColor,shoePrice, inStock){
+   
+    await db.none('INSERT INTO shoes (color, brand, price, size, in_stock) VALUES ($1, $2, $3 , $4, $5)', [shoeColor, brandName, shoePrice, shoeSize,inStock])
+}
+
+
 
 return{
     fetchAllShoes, 
-    fetchShoesBySize,
-    fetchShoesByBrand,
+    // fetchShoesBySize,
+    // fetchShoesByBrand,
     fetchShoesByBrandAndSize,
+    addShoe,
 }
 }
 

@@ -1,0 +1,19 @@
+<h1>Add A New Shoe</h1>
+<form action="/stock-update/api/shoes" method="POST">
+  <label for="color">Color:</label><br>
+  <input type="text" id="color" name="color" value="{{shoeColor}}"><br>
+  <label for="brand">Brand:</label><br>
+  <input type="text" id="brand" name="brand" value="{{brandName}}"><br>
+  <label for="price">Price:</label><br>
+  <input type="number" id="price" name="price" value="{{shoePrice}}"><br>
+  <label for="size">Size:</label><br>
+  <input type="number" id="size" name="size" value="{{shoeSize}}"><br>
+  <label for="in_stock">In Stock:</label><br>
+  <input type="number" id="in_stock" name="in_stock" value="{{inStock}}"><br>
+  <input type="submit" value="Add Shoe">
+</form>
+
+<h1>Remove A Shoe</h1>
+<form action="/api/shoes/remove/{{id}}" method="POST">
+<p>Remove a shoe by clicking the button<span><button type="submit" class="removeShoeBtn">Remove</button></span></p>
+</form>

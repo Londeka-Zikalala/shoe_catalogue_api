@@ -5,7 +5,7 @@ import flash from 'express-flash';
 import session from 'express-session';
 import cors from 'cors';
 import shoeCatalogue from './service/shoeCatalogueDb.js';
-import shoeCatalogueRoute from './shoeCatalogueRoutes/shoeCatalogue-api.js';
+import shoeCatalogueRoute from './shoeCatalogueRoutes/shoeCatalogueRoutesi.js';
 import db from './db.js';
 
 const app = express();
@@ -35,11 +35,9 @@ app.use(express.static('public'));
 
 app.get('/', shoesRoute.showIndex);
 app.get('/api/shoes', shoesRoute.listAllShoes);
-app.get('/api/shoes/size', shoesRoute.listShoesBySize);
-app.get('/api/shoes/size/:size', shoesRoute.listShoesBySize );
-app.get('/api/shoes/brand', shoesRoute.listShoesByBrand);
-app.get('/api/shoes/brand/:brand', shoesRoute.listShoesByBrand);
-app.get('/api/shoes/brand//size/', shoesRoute.listShoesByBrandAndSize);
+app.post('/stock-update/api/shoes', shoesRoute.addAShoe);
+app.get('/stock-update/api/shoes', shoesRoute.showStockUpdate)
+app.get('/api/shoes/brand//size', shoesRoute.listShoesByBrandAndSize);
 app.get('/api/shoes/brand/:brand/size/:size', shoesRoute.listShoesByBrandAndSize);
 
 
