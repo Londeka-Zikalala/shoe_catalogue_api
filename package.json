@@ -33,5 +33,6 @@
     "express-session": "^1.17.3",
     "mocha": "^10.2.0",
     "pg-promise": "^11.5.4"
-  }
+  },
+  "start":"node index.js"
 }
