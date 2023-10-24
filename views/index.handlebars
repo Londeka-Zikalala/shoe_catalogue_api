@@ -1,20 +1,80 @@
-<div class="header">Lubabalo's Shoe Shop</div>
+<div class="header">
+    <h1>Lubabalo's Shoe Shop</h1>
+</div>
+<form action="/api/shoes" method="GET">
+    <div class="shoe-list">
+    </div>
+     
+        {{#each allInStore}}
+        <ul>
+            <li>Id:{{this.id}}</li>
+            <li>Brand:{{this.brand}}</li>
+            <li>Size:{{this.size}}</li>
+            <li>Color:{{this.color}}</li>
+            <li>Price: R{{this.price}}</li>
+            <li>In Stock:{{this.in_stock}}</li>
+        </ul>
+        {{/each}}
+
+</form>
 <div class="catalogue-selection">
-<label for="brand">Brand:</label>
+    <form action="/api/shoes/brand/{{brandName}}" method="GET">
+        <label for="brand">Brand</label>
+        <select id="brand" name="brand">
+            <option value="">Select A Brand</option>
+            <option value="Nike">Nike</option>
+            <option value="Adidas">Adidas</option>
+            <option value="Puma">Puma</option>
+            <option value="Reebok">Reebok</option>
+        </select>
+         <button class="brandButton" type="submit">Show</button>
 
-<label for="size">Size:</label>
+    </form>
+ 
+    <form action="/api/shoes/size/{{shoeSize}}" method="GET">
+     <label for="size">Size</label>
+        <select id="size" name="size">
+            <option value="">Pick A Size</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+        </select>
+      <button class="sizeButton" type="submit">Show</button>
+    </form>
 </div>
 
-<div class="shoe-list">
-    <h3>Pick A Shoe</h3>
-    {{#each allInStore}}
-    <ul>
-        <li>Id:{{this.id}}</li>
-        <li>Brand:{{this.brand}}</li>
-        <li>Size:{{this.size}}</li>
-        <li>Color:{{this.color}}</li>
-        <li>Price: R{{this.price}}</li>
-        <li>In Stock:{{this.in_stock}}</li>
-    </ul>
-    {{/each}}
-</div>
+<form action="/api/shoes/brand/{{brandName}}/size/{{shoeSize}}">
+  <label for="chooseshoe">Pick A Shoe</label>
+        <select id="brand" name="brand">
+            <option value="">Select A Brand</option>
+            <option value="Nike">Nike</option>
+            <option value="Adidas">Adidas</option>
+            <option value="Puma">Puma</option>
+            <option value="Reebok">Reebok</option>
+        </select>
+
+         <select id="size" name="size">
+            <option value="">Pick A Size</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+        </select>
+
+         <button class="sizeButton" type="submit">Show</button>
+
+</form>
+
+
+   
