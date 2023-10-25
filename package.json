@@ -20,7 +20,7 @@
   "contributors": [],
   "scripts": {
     "dev": "",
-    "test": ""
+    "test": "mocha"
   },
   "description": "",
   "dependencies": {
