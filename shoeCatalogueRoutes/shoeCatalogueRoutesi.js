@@ -5,7 +5,8 @@ function shoeCatalogueRoute(shoesdb){
             const allInStore = await shoesdb.fetchAllShoes()
             
             res.render('index', {
-                allInStore
+                allInStore,
+                messages: req.flash()
             })
         }catch(error){
             console.error('Failure to fetch index')
@@ -14,7 +15,8 @@ function shoeCatalogueRoute(shoesdb){
      
         
         
-    }
+    };
+
 async function listAllShoes(req, res, next){
     try{
         const allInStore = await shoesdb.fetchAllShoes()
@@ -27,9 +29,8 @@ async function listAllShoes(req, res, next){
     console.error('Failure fetching all shoes')
     next(error)
   }
-   
 
-}
+};
 
 async function listShoesByBrandAndSize(req, res,next){
     let brandName;
@@ -38,9 +39,12 @@ async function listShoesByBrandAndSize(req, res,next){
         brandName = req.query.brand;
         shoeSize = req.query.size;
         
-            const allInStore = await shoesdb.fetchShoesByBrandAndSize(brandName,shoeSize)
+        const allInStore = await shoesdb.fetchShoesByBrandAndSize(brandName,shoeSize)
         
-        
+        if (allInStore.length === 0) {
+            req.flash('info', `No ${brandName} shoes of size ${shoeSize} in stock.`);
+        }
+
         res.render('index', {
             brandName,
             shoeSize,
@@ -49,13 +53,16 @@ async function listShoesByBrandAndSize(req, res,next){
 
     }catch(error){
         console.error(`Failure fetching ${brandName} size:${shoeSize} shoes.`)
-        next(error)
+        req.flash('error', `Failed to fetch ${brandName} size:${shoeSize} shoes.`);
+        next(error);
     }
-}
+};
+
 
 async function showStockUpdate(req, res, next){
     res.render('stock-update')
 }
+
 
 async function addAShoe(req, res,next){
     try{
@@ -64,25 +71,47 @@ async function addAShoe(req, res,next){
         const shoeColor = req.body.color;
         const shoePrice= req.body.price;
         const inStock = req.body.in_stock;
-console.log(shoeColor)
-console.log(brandName)
-        await shoesdb.addShoe(brandName,shoeSize,shoeColor,shoePrice,inStock);
+        const imageURL = req.body.image_url
 
-        res.redirect('/stock-update/api/shoes')
+        await shoesdb.addShoe(brandName,shoeSize,shoeColor,shoePrice,inStock,imageURL);
+
+        req.flash('success', 'Shoe added successfully');
+        res.redirect('/stock-update/shoes')
     }
     catch(error){
         console.error(error.message);
+        req.flash('error', 'Failed to add shoe');
         next(error);
     }
     
-}
+};
+
+async function removeAShoe(req, res,next){
+    try{
+        const shoeId = req.body.id;
+        console.log(shoeId)
+        await shoesdb.removeShoe(shoeId)
+
+        req.flash('success', 'Shoe removed successfully');
+        res.redirect('/stock-update/shoes')
+    }
+    catch(error){
+        console.error(error.message);
+        req.flash('error', 'Failed to remove shoe');
+        next(error);
+    }
+};
+
+
+
 return{
     showIndex,
     listAllShoes,
     listShoesByBrandAndSize,
     showStockUpdate,
     addAShoe,
+    removeAShoe,
 }
-}
+};
 
 export default shoeCatalogueRoute

@@ -21,19 +21,21 @@ async function fetchShoesByBrandAndSize(brandName, shoeSize){
     return shoes
 }
 
-async function addShoe(brandName, shoeSize, shoeColor,shoePrice, inStock){
+async function addShoe(brandName, shoeSize, shoeColor,shoePrice, inStock,imageURL){
    
-    await db.none('INSERT INTO shoes (color, brand, price, size, in_stock) VALUES ($1, $2, $3 , $4, $5)', [shoeColor, brandName, shoePrice, shoeSize,inStock])
+
+    await db.none('INSERT INTO shoes (color, brand, price, size, in_stock,image_url) VALUES ($1, $2, $3 , $4, $5,$6)', [shoeColor, brandName, shoePrice, shoeSize,inStock,imageURL])
 }
 
-
+async function removeShoe(shoeId){
+    await db.none('UPDATE shoes SET in_stock = in_stock - 1 WHERE id = $1',[shoeId])
+}
 
 return{
     fetchAllShoes, 
-    // fetchShoesBySize,
-    // fetchShoesByBrand,
     fetchShoesByBrandAndSize,
     addShoe,
+    removeShoe,
 }
 }
 

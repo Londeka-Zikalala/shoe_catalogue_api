@@ -23,8 +23,9 @@ function shoesAPI(shoesdb){
                 const shoeColor = req.body.color;
                 const shoePrice= req.body.price;
                 const inStock = req.body.in_stock;
+                const imageURL = req.body.image_url
     
-                await shoesdb.addShoe(brandName,shoeSize,shoeColor,shoePrice,inStock);
+                await shoesdb.addShoe(brandName,shoeSize,shoeColor,shoePrice,inStock,imageURL);
     
                 let allInStore = await shoesdb.fetchAllShoes();
                 res.json({
@@ -33,6 +34,22 @@ function shoesAPI(shoesdb){
                 });
             }
             catch (error) {
+                res.json({
+                    status: "error",
+                    error: error.stack
+                });
+            }
+        };
+
+        async function deleteShoe (req,res) {
+            try{
+                const shoeId = req.body.id
+                await shoesdb.deleteShoe(shoeId)
+                res.json({
+                    status: 'success',
+                    data: allInStore
+                });
+            } catch (error) {
                 res.json({
                     status: "error",
                     error: error.stack
@@ -63,6 +80,7 @@ function shoesAPI(shoesdb){
         return{
             allShoes,
             addShoes,
+            deleteShoe,
             getShoesBySizeAndBrand,
         }
     }
