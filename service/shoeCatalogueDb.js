@@ -5,21 +5,24 @@ async function fetchAllShoes(){
     return allShoes
 }
 
-
 async function fetchShoesByBrandAndSize(brandName, shoeSize){
     let shoes;
-    if(brandName === "" ){
-        shoes = await db.any('SELECT * FROM shoes WHERE size=$1', [shoeSize])
-    }
-    else if(shoeSize === "" ){
-        shoes =await db.any('SELECT * FROM shoes WHERE brand=$1', [brandName])
-    }
-    else if (brandName && shoeSize){
+    if(brandName && shoeSize){
         shoes = await db.any('SELECT * FROM shoes WHERE brand=$1 AND size=$2', [brandName,shoeSize])
     }
-   
+    else if(brandName){
+        shoes = await db.any('SELECT * FROM shoes WHERE brand=$1', [brandName])
+    }
+    else if(shoeSize){
+        shoes = await db.any('SELECT * FROM shoes WHERE size=$1', [shoeSize])
+    }
+    else {
+        // return all shoes if both brandName and shoeSize are not provided
+        shoes = await db.any('SELECT * FROM shoes')
+    }
     return shoes
 }
+
 
 async function addShoe(brandName, shoeSize, shoeColor,shoePrice, inStock,imageURL){
    

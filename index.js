@@ -32,8 +32,10 @@ app.use(flash());
 app.engine('handlebars', engine());
 app.set('view engine', 'handlebars');
 app.set('views', './views');
+
 //public static
 app.use(express.static('public'));
+
 //route handlers
 app.get('/', shoesRoute.showIndex);
 app.get('/shoes', shoesRoute.listAllShoes);
@@ -48,6 +50,7 @@ app.get('/api/shoes', shoeAPI.allShoes);
 app.post('/api/shoes', shoeAPI.addShoes);
 app.post('/api/shoes/sold/:id', shoeAPI.deleteShoe)
 app.get('/api/shoes/brand/:brand/size/:size', shoeAPI.getShoesBySizeAndBrand);
+
 //local host 
 const PORT = process.env.PORT || 3011
 
