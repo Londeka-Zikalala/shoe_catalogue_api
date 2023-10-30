@@ -1,0 +1,21 @@
+GET http://localhost:3011/api/shoes
+
+###
+GET http://localhost:3011/api/shoes/brand/Nike/size/6
+
+###
+POST  http://localhost:3011/api/shoes
+Content-Type: application/json
+
+{   
+"id": 1,
+"color": "red",
+"brand": "Nike",
+"price": 1200,
+"size": 7,
+"in_stock": 10,
+"image_url": "https://shoes.com/nike-red.jpg"
+                                                }
+
+
+
