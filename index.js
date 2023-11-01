@@ -4,6 +4,7 @@ import bodyParser from 'body-parser';
 import flash from 'express-flash';
 import session from 'express-session';
 import cors from 'cors';
+import axios from 'axios';
 import shoeCatalogue from './service/shoeCatalogueDb.js';
 import shoeCatalogueRoute from './shoeCatalogueRoutes/shoeCatalogueRoutesi.js';
 import shoesAPI from './shoeCatalogue-api/shoeCatalogue-api.js';
@@ -16,6 +17,9 @@ const shoeAPI = shoesAPI(shoesdb)
 
 //cors middleware
 app.use(cors())
+
+//axios 
+console.log(axios.isCancel('something'));
 //body-parser middleware
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -48,8 +52,11 @@ app.post('/stock-update/shoes/sold', shoesRoute.removeAShoe )
 //API 
 app.get('/api/shoes', shoeAPI.allShoes);
 app.post('/api/shoes', shoeAPI.addShoes);
-app.post('/api/shoes/sold/:id', shoeAPI.deleteShoe)
+app.post('/api/shoes/sold/:id', shoeAPI.deleteShoe);
+app.get('/api/shoes/brand/:brand', shoeAPI.getShoesByBrand);
+app.get('/api/shoes/size/:size', shoeAPI.getShoesBySize);
 app.get('/api/shoes/brand/:brand/size/:size', shoeAPI.getShoesBySizeAndBrand);
+
 
 //local host 
 const PORT = process.env.PORT || 3011

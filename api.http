@@ -1,21 +1,28 @@
+##All shoes
 GET http://localhost:3011/api/shoes
 
-###
-GET http://localhost:3011/api/shoes/brand/Nike/size/6
+### SHoe by brand and size
+GET http://localhost:3011/api/shoes/brand/Nike/size/7
 
-###
+###Shoes by brand 
+GET http://localhost:3011/api/shoes/brand/Steve-Madden
+
+### Shoes by size
+GET http://localhost:3011/api/shoes/size/7
+
+### Add a shoe
 POST  http://localhost:3011/api/shoes
 Content-Type: application/json
 
 {   
-"id": 1,
-"color": "red",
-"brand": "Nike",
-"price": 1200,
-"size": 7,
-"in_stock": 10,
-"image_url": "https://shoes.com/nike-red.jpg"
-                                                }
+"color": "navy",
+"brand": "Adidas",
+"price": 1999,
+"size": 6,
+"in_stock": 5,
+"image_url": "https://th.bing.com/th/id/R.7734d8ce719e573ec2117680c5637e09?rik=mBRljcztdn4lpA&pid=ImgRaw&r=0"
+   }
 
-
+### Remove a shoe from stock
+POST http://localhost:3011/api/shoes/sold/24
 
