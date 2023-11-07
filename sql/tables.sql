@@ -7,3 +7,18 @@ CREATE TABLE  shoes (
     size INTEGER NOT NULL,
     in_stock INTEGER NOT NULL
 );
+
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+   
+);
+
+CREATE TABLE shoes_cart (
+    user_id INTEGER REFERENCES users(id),
+    shoe_id INTEGER REFERENCES shoes(id),
+    quantity INTEGER,
+    PRIMARY KEY (user_id, shoe_id)
+);

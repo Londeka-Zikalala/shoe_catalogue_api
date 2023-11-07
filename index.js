@@ -7,13 +7,15 @@ import cors from 'cors';
 import axios from 'axios';
 import shoeCatalogue from './service/shoeCatalogueDb.js';
 import shoeCatalogueRoute from './shoeCatalogueRoutes/shoeCatalogueRoutesi.js';
-import shoesAPI from './shoeCatalogue-api/shoeCatalogue-api.js';
+import shoesAPI from './API/shoeCatalogue-api.js';
+import userAPI from './API/usersAPI.js'
 import db from './db.js';
 
 const app = express();
 const shoesdb = shoeCatalogue(db)
 const shoesRoute = shoeCatalogueRoute(shoesdb)
 const shoeAPI = shoesAPI(shoesdb)
+const users = userAPI(shoesdb)
 
 //cors middleware
 app.use(cors())
@@ -46,17 +48,21 @@ app.get('/shoes', shoesRoute.listAllShoes);
 app.post('/stock-update/shoes', shoesRoute.addAShoe);
 app.get('/stock-update/shoes', shoesRoute.showStockUpdate)
 app.get('/shoes/brand//size', shoesRoute.listShoesByBrandAndSize);
-app.get('/shoes/brand/:brand/size/:size', shoesRoute.listShoesByBrandAndSize);
+app.get('/shoes/brand/:brand?/size/:size?', shoesRoute.listShoesByBrandAndSize);
 app.post('/stock-update/shoes/sold', shoesRoute.removeAShoe )
 
-//API 
+//shoes API
 app.get('/api/shoes', shoeAPI.allShoes);
 app.post('/api/shoes', shoeAPI.addShoes);
 app.post('/api/shoes/sold/:id', shoeAPI.deleteShoe);
 app.get('/api/shoes/brand/:brand', shoeAPI.getShoesByBrand);
 app.get('/api/shoes/size/:size', shoeAPI.getShoesBySize);
-app.get('/api/shoes/brand/:brand/size/:size', shoeAPI.getShoesBySizeAndBrand);
-
+app.get('/shoes/brand//size',shoeAPI.getShoesBySizeAndBrand);
+app.get('/api/shoes/brand/:brand?/size/:size?', shoeAPI.getShoesBySizeAndBrand);
+//Users API
+app.post('/api/users', users.registerUser);
+app.post('/api/users/cart', users.addToCart);
+app.get('/api/users/cart/:email', users.getCart);
 
 //local host 
 const PORT = process.env.PORT || 3011

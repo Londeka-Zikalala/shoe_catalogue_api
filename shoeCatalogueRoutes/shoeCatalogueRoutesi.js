@@ -39,11 +39,16 @@ async function listShoesByBrandAndSize(req, res,next){
         brandName = req.query.brand;
         shoeSize = req.query.size;
         
-        const allInStore = await shoesdb.fetchShoesByBrandAndSize(brandName,shoeSize)
-        
-        if (allInStore.length === 0) {
-            req.flash('info', `No ${brandName} shoes of size ${shoeSize} in stock.`);
-        }
+
+            let allInStore = await shoesdb.fetchAllShoes();
+    
+            if (brandName || shoeSize) {
+                allInStore = await shoesdb.fetchShoesByBrandAndSize(brandName, shoeSize);
+            }
+    
+            if (allInStore.length === 0) {
+                req.flash('info', `No ${brandName} shoes of size ${shoeSize} in stock.`)
+            }
 
         res.render('index', {
             brandName,

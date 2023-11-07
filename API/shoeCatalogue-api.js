@@ -98,7 +98,7 @@ function shoesAPI(shoesdb){
              
                 let shoeSize = req.params.size;
                 
-                let allInStore = await shoesdb.fetchShoesBySize(shoeSize);
+                let allInStore = await shoesdb.fetchShoesBSize(shoeSize);
                 
                 res.json({
                     status: 'success',
@@ -113,52 +113,6 @@ function shoesAPI(shoesdb){
             }
         };
 
-        async function addToCart(req, res) {
-            try {
-                const userId = req.body.userId;
-                const shoeId = req.body.shoeId;
-                const quantity = req.body.quantity;
-    
-                const addToCartResult = await shoesdb.addToCart(userId, shoeId, quantity);
-    
-                res.json(addToCartResult);
-            } catch (error) {
-                res.json({
-                    status: "error",
-                    error: error.stack
-                });
-            }
-        };
-        
-async function getCart(req, res) {
-    try {
-        const userId = req.params.userId;
-        const cart = await shoesdb.getUserCart(userId); 
-        res.json({
-            status: 'success',
-            cart
-        });
-    } catch (error) {
-        res.json({
-            status: "error",
-            error: error.stack
-        });
-    }
-};
-
-async function checkout(req, res) {
-    try {
-        const userId = req.params.userId; 
-
-        const checkoutResult = await shoeCatalogue.checkout(userId);
-        res.json(checkoutResult);
-    } catch (error) {
-        res.json({
-            status: "error",
-            error: error.stack
-        });
-    }
-};
 
         return{
             allShoes,
@@ -167,9 +121,7 @@ async function checkout(req, res) {
             getShoesBySizeAndBrand,
             getShoesByBrand,
             getShoesBySize,
-            addToCart,
-            getCart,
-            checkout
+           
         }
     }
     

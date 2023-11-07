@@ -2,7 +2,7 @@
 GET http://localhost:3011/api/shoes
 
 ### SHoe by brand and size
-GET http://localhost:3011/api/shoes/brand/Nike/size/7
+GET http://localhost:3011/api/shoes/brand//size/6
 
 ###Shoes by brand 
 GET http://localhost:3011/api/shoes/brand/Steve-Madden
@@ -26,3 +26,26 @@ Content-Type: application/json
 ### Remove a shoe from stock
 POST http://localhost:3011/api/shoes/sold/24
 
+### register a user 
+POST http://localhost:3011/api/users
+Content-Type: application/json
+
+{   
+"username": "Londeka",
+"password": "password00",
+"email": "LK@gmail.com"
+   }
+
+### add to cart
+POST http://localhost:3011/api/users/cart/
+Content-Type: application/json
+
+{   
+"image_url": "https://th.bing.com/th/id/R.7734d8ce719e573ec2117680c5637e09?rik=mBRljcztdn4lpA&pid=ImgRaw&r=0",
+"quantity": 2,
+"email": "LK@gmail.com"
+   }
+
+### get the cart 
+GET http://localhost:3011/api/users/cart/LK@gmail.com
+    

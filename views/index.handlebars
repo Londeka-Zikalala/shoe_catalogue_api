@@ -27,7 +27,7 @@
 
 <form action="/shoes/brand/{{brandName}}/size/{{shoeSize}}">
   <label for="chooseshoe">Pick A Shoe</label>
-        <select id="brand" name="brand">
+        <select id="brand" name="brand" value="{{brandName}}">
             <option value="">Select A Brand</option>
             <option value="Nike">Nike</option>
             <option value="Adidas">Adidas</option>
@@ -35,7 +35,7 @@
             <option value="Reebok">Reebok</option>
         </select>
 
-         <select id="size" name="size">
+         <select id="size" name="size" value="{{shoeSize}}">
             <option value="">Pick A Size</option>
             <option value="1">1</option>
             <option value="2">2</option>
