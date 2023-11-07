@@ -57,7 +57,6 @@ app.post('/api/shoes', shoeAPI.addShoes);
 app.post('/api/shoes/sold/:id', shoeAPI.deleteShoe);
 app.get('/api/shoes/brand/:brand', shoeAPI.getShoesByBrand);
 app.get('/api/shoes/size/:size', shoeAPI.getShoesBySize);
-app.get('/shoes/brand//size',shoeAPI.getShoesBySizeAndBrand);
 app.get('/api/shoes/brand/:brand?/size/:size?', shoeAPI.getShoesBySizeAndBrand);
 //Users API
 app.post('/api/users', users.registerUser);
