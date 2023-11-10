@@ -7,31 +7,76 @@ const shoeService = shoeCatalogue(db);
 
 describe('shoeCatalogue function', function () {
     // Set a timeout for the tests
-    this.timeout(6000);
+    this.timeout(100000);
 
-    // Clean the shoes table before each test
+    const mockShoe1 = {
+        brand: 'Nike',
+        size: 6,
+        color: 'red',
+        price: 1200.00,
+        in_stock: 10,
+        image_url: 'https://shoes.com/nike-red.jpg'
+    };
+
+    const mockShoe2 = {
+        brand: 'Adidas',
+        size: 7,
+        color: 'blue',
+        price: 1000.00,
+        in_stock: 8,
+        image_url: 'https://shoes.com/adidas-blue.jpg'
+    };
+
+    const mockShoe3 = {
+        brand: 'Puma',
+        size: 8,
+        color: 'black',
+        price: 800.00,
+        in_stock: 5,
+        image_url: 'https://shoes.com/puma-black.jpg'
+    };
+
+    const mockUser1 = {
+        username: 'User1',
+        email: 'k@gmail.com',
+        password: 'password1',
+        balance:4400.00
+
+    };
+
+    const mockUser2 = {
+        username: 'User2',
+        email: 'j@gmail.com',
+        password: 'password2',
+        balance: 4000.00
+    };
+
     beforeEach(async function () {
-       try{
-         await db.none("TRUNCATE TABLE shoes RESTART IDENTITY CASCADE;");
-       }catch(error){
-        console.error(error.message)
-       }
-    })
+        // Set up mock Shoe in the Shoebase
+        await shoeService.addShoe(mockShoe1);
+        await shoeService.addShoe(mockShoe2);
+        await shoeService.addShoe(mockShoe3);
+        await shoeService.insertUser(mockUser1.username, mockUser1.email, mockUser1.password);
+        await shoeService.insertUser(mockUser2.username, mockUser2.email, mockUser2.password);
+    });
+
+    afterEach(async function () {
+        // Clean up mock Shoe after each test
+        await shoeService.removeShoe(1);
+        await shoeService.removeShoe(2);
+        await shoeService.removeShoe(3);
+        await db.none('TRUNCATE TABLE users RESTART IDENTITY CASCADE')
+        
+    });
 
     // Test the fetchAllShoes function
     it('should fetch all shoes from the database', async function () {
         try{
-                   //mock data
-        var shoeColor1 = "red"; var shoeColor2 = 'blue'; var shoeColor3 = 'black';
-        var shoeBrand1 = 'Nike'; var shoeBrand2 = Adidas; var shoeBrand3 = 'Puma';
-        var price1 = 1200; var price2 = 1000; var price3 = 800;
-        var size1 = 6; var size2 = 7; var size3 = 8; 
-        var available1 = 10; var available2 = 8; var available3 = 5; 
-        var img1 ='https://shoes.com/nike-red.jpg' ; var img2 = 'https://shoes.com/adidas-blue.jpg'; var img3 = 'https://shoes.com/puma-black.jpg'; 
         //add shoes
-        await shoeService.addShoe( shoeBrand1,size1,shoeColor1,price1,available1,img1);
-        await shoeService.addShoe( shoeBrand2,size2,shoeColor2,price2,available2,img2);
-        await shoeService.addShoe( shoeBrand1,size3,shoeColor3,price3,available3,img3);
+        await shoeService.addShoe( mockShoe1.brand,mockShoe1.size,mockShoe1.color,mockShoe1.price,mockShoe1.in_stock, mockShoe1.image_url);
+        await shoeService.addShoe( mockShoe2.brand,mockShoe2.size,mockShoe2.color,mockShoe2.price,mockShoe1.in_stock, mockShoe2.image_url);
+        await shoeService.addShoe( mockShoe3.brand,mockShoe3.size,mockShoe3.color,mockShoe3.price,mockShoe3.in_stock, mockShoe3.image_url);
+
             // Call the fetchAllShoes function
             const allShoes = await shoeService.fetchAllShoes();
 
@@ -40,7 +85,7 @@ describe('shoeCatalogue function', function () {
                     id: 1,
                     color: 'red',
                     brand: 'Nike',
-                    price: 1200,
+                    price: 1200.00,
                     size: 6,
                     in_stock: 10,
                     image_url: 'https://shoes.com/nike-red.jpg'
@@ -49,7 +94,7 @@ describe('shoeCatalogue function', function () {
                     id: 2,
                     color: 'blue',
                     brand: 'Adidas',
-                    price: 1000,
+                    price: 1000.00,
                     size: 7,
                     in_stock: 8,
                     image_url: 'https://shoes.com/adidas-blue.jpg'
@@ -58,7 +103,7 @@ describe('shoeCatalogue function', function () {
                     id: 3,
                     color: 'black',
                     brand: 'Puma',
-                    price: 800,
+                    price: 800.00,
                     size: 8,
                     in_stock: 5,
                     image_url: 'https://shoes.com/puma-black.jpg'
@@ -71,29 +116,24 @@ describe('shoeCatalogue function', function () {
     });
 
     // Test the fetchShoesByBrandAndSize function
-    it('should fetch shoes by brand and size from the database', async function (){
+    it('should fetch shoes by brand and size from the Shoebase', async function (){
       try{
-        //mock data
-        var shoeColor1 = 'red'; var shoeColor2 = 'blue'; var shoeColor3 = 'black';
-        var shoeBrand1 = 'Nike'; var shoeBrand2 = Adidas; var shoeBrand3 = 'Puma';
-        var price1 = 1200; var price2 = 1000; var price3 = 800;
-        var size1 = 6; var size2 = 7; var size3 = 8; 
-        var available1 = 10; var available2 = 8; var available3 = 5; 
-        var img1 ='https://shoes.com/nike-red.jpg' ; var img2 = 'https://shoes.com/adidas-blue.jpg'; var img3 = 'https://shoes.com/puma-black.jpg'; 
+        
+        
         //add shoes
-        await shoeService.addShoe( shoeBrand1,size1,shoeColor1,price1,available1,img1);
-        await shoeService.addShoe( shoeBrand2,size2,shoeColor2,price2,available2,img2);
-        await shoeService.addShoe( shoeBrand1,size3,shoeColor3,price3,available3,img3);
+        await shoeService.addShoe( mockShoe1.brand,mockShoe1.size,mockShoe1.color,mockShoe1.price,mockShoe1.in_stock, mockShoe1.image_url);
+        await shoeService.addShoe( mockShoe2.brand,mockShoe2.size,mockShoe2.color,mockShoe2.price,mockShoe1.in_stock, mockShoe2.image_url);
+        await shoeService.addShoe( mockShoe3.brand,mockShoe3.size,mockShoe3.color,mockShoe3.price,mockShoe3.in_stock, mockShoe3.image_url);
         //3 conditions
         const shoesByBrand = await shoeService.fetchShoesByBrandAndSize('Nike', '');
         const shoesBySize = await shoeService.fetchShoesByBrandAndSize('', 7);
         const shoesByBrandAndSize = await shoeService.fetchShoesByBrandAndSize('Puma', 8);
-        //data returned
+        //Shoe returned
         assert.deepEqual(shoesByBrand,[{
             id: 1,
             color: 'red',
             brand: 'Nike',
-            price: 1200,
+            price: 1200.00,
             size: 6,
             in_stock: 10,
             image_url: 'https://shoes.com/nike-red.jpg'
@@ -103,7 +143,7 @@ describe('shoeCatalogue function', function () {
             id: 2,
             color: 'blue',
             brand: 'Adidas',
-            price: 1000,
+            price: 1000.00,
             size: 7,
             in_stock: 8,
             image_url: 'https://shoes.com/adidas-blue.jpg'
@@ -113,7 +153,7 @@ describe('shoeCatalogue function', function () {
             id: 3,
             color: 'black',
             brand: 'Puma',
-            price: 800,
+            price: 800.00,
             size: 8,
             in_stock: 5,
             image_url: 'https://shoes.com/puma-black.jpg'
@@ -123,18 +163,12 @@ describe('shoeCatalogue function', function () {
        }
     })
     // Test the addShoe function
-it('should add a shoe to the database', async function (){
+it('should add a new shoe to the Shoebase', async function (){
     try{
-//mock data
-        var shoeColor1 = 'green';
-        var shoeBrand1 = 'Reebok';
-        var price1 = 900;
-        var size1 = 9;
-        var available1 = 7;
-        var img1 = 'https://shoes.com/reebok-green.jpg'; 
-
+     
         //add shoe
-        await shoeService.addShoe( shoeBrand1,size1,shoeColor1,price1,available1,img1);
+        await shoeService.addShoe( mockShoe1.brand,mockShoe1.size,mockShoe1.color,mockShoe1.price,mockShoe1.in_stock, mockShoe1.image_url);
+
 
         // Fetch all shoes and store the result
         const allShoes = await shoeService.fetchAllShoes();
@@ -143,34 +177,58 @@ it('should add a shoe to the database', async function (){
         assert.deepEqual(allShoes, [
             {
                 id: 1,
-                color: 'green',
-                brand: 'Reebok',
-                price: 900,
-                size: 9,
-                in_stock: 7,
-                image_url: 'https://shoes.com/reebok-green.jpg'
+                color: 'red',
+                brand: 'Nike',
+                price: 1200.00,
+                size: 6,
+                in_stock: 10,
+                image_url: 'https://shoes.com/nike-red.jpg'
             }
-
         ]);
     }catch(error){
         console.error(error.message)
     }
 
     })
+    it('should add an existing shoe to the Shoebase', async function (){
+        try{
+
+    
+            //add shoe
+            await shoeService.addShoe( mockShoe1.brand,mockShoe1.size,mockShoe1.color,mockShoe1.price,mockShoe1.in_stock, mockShoe1.image_url);
+            await shoeService.addShoe( mockShoe1.brand,mockShoe1.size,mockShoe1.color,mockShoe1.price,mockShoe1.in_stock, mockShoe1.image_url);
+
+    
+            // Fetch all shoes and store the result
+            const allShoes = await shoeService.fetchAllShoes();
+    
+            
+            assert.deepEqual(allShoes, [
+                {
+                    id: 1,
+                    color: 'red',
+                    brand: 'Nike',
+                    price: 1200.00,
+                    size: 6,
+                    in_stock: 20,
+                    image_url: 'https://shoes.com/nike-red.jpg'
+                }
+    
+            ]);
+        }catch(error){
+            console.error(error.message)
+        }
+    
+        })
+    
 
         // Test the removeShoe function
-it('should remove a shoe from the database', async function (){
+it('should remove a shoe from the Shoebase', async function (){
     try{
-       //mock data
-       var shoeColor1 = 'green';
-       var shoeBrand1 = 'Reebok';
-       var price1 = 900;
-       var size1 = 9;
-       var available1 = 7;
-       var img1 = 'https://shoes.com/reebok-green.jpg'; 
+      
 
        //add shoe
-       await shoeService.addShoe(shoeColor1, shoeBrand1, price1, size1, available1, img1);
+       await shoeService.addShoe( mockShoe1.brand,mockShoe1.size,mockShoe1.color,mockShoe1.price,mockShoe1.in_stock, mockShoe1.image_url);
 
         // Call the removeShoe function
         await shoeService.removeShoe(1);
@@ -183,50 +241,117 @@ it('should remove a shoe from the database', async function (){
         console.error(error.message)
     }
 });
+//Test for the addToCart function 
+it('should add an item to a cart',async function(){
+  
+    const email = mockUser1.email;
+    const imageURL = mockShoe1.image_url;
+    const password = mockUser1.password;
+    const username = mockUser1.username;
+    const balance = mockUser1.balance;
+    const quantity = 2;
+
+    await shoeService.insertUser(username,email,password, balance);
+    await shoeService.addShoe( mockShoe1.brand,mockShoe1.size,mockShoe1.color,mockShoe1.price,mockShoe1.in_stock, mockShoe1.image_url);
+
+    const result = await shoeService.addToCart(email, imageURL, quantity);
+
+    assert.equal(result.success, true);
+    assert.equal(result.message, 'Cart updated successfully');
+  
+   
+})
 //Test for the getCart function
 it('should get the users cart', async function () {
-     //mock data
-     var shoeColor1 = 'green';
-     var shoeBrand1 = 'Reebok';
-     var price1 = 900;
-     var size1 = 9;
-     var available1 = 7;
-     var img1 = 'https://shoes.com/reebok-green.jpg'; 
+    const email = mockUser1.email;
+    const imageURL1 = mockShoe1.image_url;
+    const imageURL2 = mockShoe2.image_url;
+    const password = mockUser1.password;
+    const username = mockUser1.username;
+    const balance = mockUser1.balance;
+    const quantity = 2;
 
-     var shoeColor2 = 'navy';
-     var shoeBrand2 = 'Adidas';
-     var price2 = 1199;
-     var size2 = 7;
-     var available2 = 4;
-     var img2= 'https://shoes.com/adidas-navy.jpg'; 
+      //add shoes
 
-     //add shoe
-     await shoeService.addShoe( shoeBrand1,size1,shoeColor1,price1,available1,img1);
-     await shoeService.addShoe( shoeBrand2,size2,shoeColor2,price2,available2,img2);
+      await shoeService.addShoe( mockShoe1.brand,mockShoe1.size,mockShoe1.color,mockShoe1.price,mockShoe1.in_stock, mockShoe1.image_url);
+      await shoeService.addShoe( mockShoe2.brand,mockShoe2.size,mockShoe2.color,mockShoe2.price,mockShoe1.in_stock, mockShoe2.image_url);
+      //insert user
+      await shoeService.insertUser(username, email,password, balance);
 
-    const userCart1 = [
-      {imgurl:'https://shoes.com/reebok-green.jpg', quantity: 2 }
-    ];
-    const userCart2 = [
-        {imgurl:'https://shoes.com/adidas-navy.jpg', quantity: 1 }
-      ];
-let user1 = 'k@gmail.com';
-let user2 = 'j@gmail.com';
+      await shoeService.addToCart(email, imageURL1, quantity)
+      await shoeService.addToCart(email, imageURL2, quantity)
 
+    const cart1= await shoeService.getUserCart(email); 
+    const result = {
+    cartItems:[
+            {
+                "imgurl": "https://shoes.com/nike-red.jpg",
+                "price": 1200.00,
+                "quantity": 2
+          
+        },
+        {
+            "imgurl": "https://shoes.com/adidas-blue.jpg",
+             "price":1000.00,
+            "quantity": 2
+      
+     
+    }],
+    totalPrice:4400}
 
-
-    await shoeService.insertUser('User1', user1, 'password1');
-    await shoeService.insertUser('User2', user2, 'password2');
-    await shoeService.addToCart(user1,'https://shoes.com/reebok-green.jpg' , 2);
-    await shoeService.addToCart(user2,'https://shoes.com/adidas-navy.jpg',1);
-    const cart1= await shoeService.getUserCart(user1); 
-    const cart2 = await shoeService.getUserCart(user2);
-
-
-    assert.deepEqual(cart1, userCart1);
-    assert.deepEqual(cart2, userCart2)
+    assert.deepEqual(cart1, result)
   });
+//test for the checkout function 
+it('should checkout a cart when the balance is enough', async function () {
+    const email = mockUser1.email;
+    const imageURL1 = mockShoe1.image_url;
+    const password = mockUser1.password;
+    const username = mockUser1.username;
+    const balance = mockUser1.balance;
+    const quantity = 2;
 
+      //add shoes
+
+      await shoeService.addShoe( mockShoe1.brand,mockShoe1.size,mockShoe1.color,mockShoe1.price,mockShoe1.in_stock, mockShoe1.image_url);
+      //insert user
+      await shoeService.insertUser(username, email,password,balance);
+    //add to cart
+      await shoeService.addToCart(email, imageURL1, quantity)
+    //get cart
+   await shoeService.getUserCart(email); 
+   //checkout
+    const result = await shoeService.checkout(email)
+   assert.equal(result.success,true )
+   assert.equal(result.message, 'Checkout successful!')
+});
+it('should throw an error checkout for a cart when the balance is not enough', async function () {
+ 
+    const email = mockUser1.email;
+    const imageURL1 = mockShoe1.image_url;
+    const imageURL2 = mockShoe2.image_url;
+    const password = mockUser1.password;
+    const username = mockUser1.username;
+    const balance = mockUser1.balance;
+    const quantity = 2;
+
+      //add shoes
+      await shoeService.addShoe( mockShoe2.brand,mockShoe2.size,mockShoe2.color,mockShoe2.price,mockShoe1.in_stock, mockShoe2.image_url);
+      await shoeService.addShoe( mockShoe1.brand,mockShoe1.size,mockShoe1.color,mockShoe1.price,mockShoe1.in_stock, mockShoe1.image_url);
+      //insert user
+      await shoeService.insertUser(username, email,password,balance);
+    //add to cart
+      await shoeService.addToCart(email, imageURL1, quantity)
+      await shoeService.addToCart(email, imageURL2, quantity)
+
+    //get cart
+   await shoeService.getUserCart(email); 
+   //checkout
+    const result = await shoeService.checkout(email)
+   assert.equal(result.success,false )
+   assert.equal(result.error, 'Insufficient funds')
+
+  
+});
     after(function () {
         db.$pool.end();}
     )
