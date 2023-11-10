@@ -7,7 +7,7 @@ const shoeService = shoeCatalogue(db);
 
 describe('shoeCatalogue function', function () {
     // Set a timeout for the tests
-    this.timeout(100000);
+    this.timeout(6000);
 
     const mockShoe1 = {
         brand: 'Nike',
@@ -53,19 +53,17 @@ describe('shoeCatalogue function', function () {
 
     beforeEach(async function () {
         // Set up mock Shoe in the Shoebase
-        await shoeService.addShoe(mockShoe1);
-        await shoeService.addShoe(mockShoe2);
-        await shoeService.addShoe(mockShoe3);
-        await shoeService.insertUser(mockUser1.username, mockUser1.email, mockUser1.password);
-        await shoeService.insertUser(mockUser2.username, mockUser2.email, mockUser2.password);
+        await shoeService.addShoe( mockShoe1.brand,mockShoe1.size,mockShoe1.color,mockShoe1.price,mockShoe1.in_stock, mockShoe1.image_url);
+        await shoeService.addShoe( mockShoe2.brand,mockShoe2.size,mockShoe2.color,mockShoe2.price,mockShoe1.in_stock, mockShoe2.image_url);
+        await shoeService.addShoe( mockShoe3.brand,mockShoe3.size,mockShoe3.color,mockShoe3.price,mockShoe3.in_stock, mockShoe3.image_url);
+        await shoeService.insertUser(mockUser1.username, mockUser1.email, mockUser1.password, mockUser1.balance);
+        await shoeService.insertUser(mockUser2.username, mockUser2.email, mockUser2.password,mockUser2.balance );
     });
 
     afterEach(async function () {
         // Clean up mock Shoe after each test
-        await shoeService.removeShoe(1);
-        await shoeService.removeShoe(2);
-        await shoeService.removeShoe(3);
-        await db.none('TRUNCATE TABLE users RESTART IDENTITY CASCADE')
+        await db.none("DELETE FROM shoes WHERE image_url ='https://shoes.com/nike-red.jpg' OR image_url = 'https://shoes.com/adidas-blue.jpg' OR image_url = 'https://shoes.com/puma-black.jpg'");
+        await db.none('TRUNCATE TABLE users RESTART IDENTITY CASCADE');
         
     });
 
@@ -231,7 +229,7 @@ it('should remove a shoe from the Shoebase', async function (){
        await shoeService.addShoe( mockShoe1.brand,mockShoe1.size,mockShoe1.color,mockShoe1.price,mockShoe1.in_stock, mockShoe1.image_url);
 
         // Call the removeShoe function
-        await shoeService.removeShoe(1);
+        await shoeService.removeShoe(1, 5);
 
         // Fetch all shoes and store the result
         const allShoes = await shoeService.fetchAllShoes();

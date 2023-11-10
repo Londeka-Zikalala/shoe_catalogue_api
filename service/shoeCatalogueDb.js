@@ -37,7 +37,7 @@ function shoeCatalogue(db) {
     async function addShoe(brandName, shoeSize, shoeColor, shoePrice, inStock, imageURL) {
         try {
             // Check if shoe exists
-            const shoe = await db.oneOrNone('SELECT id FROM shoes WHERE color = $1 AND brand = $2 AND size = $3', [shoeColor, brandName, shoeSize]);
+            const shoe = await db.oneOrNone('SELECT id FROM shoes WHERE image_url = $1', [imageURL]);
 
             // If shoe does not exist, insert new shoe
             if (!shoe) {
@@ -45,7 +45,7 @@ function shoeCatalogue(db) {
             } else {
                 // Update in_stock for existing shoe
                 const newInStock = shoe.in_stock + inStock;
-                await db.none('UPDATE shoes SET in_stock = $1 WHERE color = $2 AND brand = $3 AND size = $4 AND image_url =$5', [newInStock, shoeColor, brandName, shoeSize, imageURL]);
+                await db.none('UPDATE shoes SET in_stock = $1 WHERE image_url = $2', [newInStock,imageURL]);
             }
         } catch (error) {
             console.error(error.message);
@@ -80,7 +80,7 @@ function shoeCatalogue(db) {
             if (!user) {
                 await db.none('INSERT INTO users (username, email, password, balance) VALUES ($1, $2, $3, $4)', [username, email, password, balance]);
             } else {
-                // Update the balance for an existing user
+                //return the user id
                 return await getUserId(email)
             }
         } catch (error) {
@@ -115,7 +115,7 @@ function shoeCatalogue(db) {
                 await db.none('UPDATE shoes_cart SET quantity = $1 WHERE user_id = $2 AND shoe_id = $3', [quantity, userId, shoeId]);
             } else {
                 // Add new item to the cart
-                await db.none('INSERT INTO shoes_cart (user_id, shoe_id, quantity) VALUES ($1, $2, $3,$4)', [userId, shoeId, quantity]);
+                await db.none('INSERT INTO shoes_cart (user_id, shoe_id, quantity) VALUES ($1, $2, $3)', [userId, shoeId, quantity]);
             }
     
             return { success: true, message: 'Cart updated successfully' };
@@ -149,9 +149,9 @@ function shoeCatalogue(db) {
         }
     }
     
-    async function updateUserBalance(email, newBalance) {
+    async function updateUserBalance(email, balance) {
         try {
-            await db.none('UPDATE users SET balance = $1 WHERE email = $2', [newBalance, email]);
+            await db.none('UPDATE users SET balance = $1 WHERE email = $2', [balance, email]);
         } catch (error) {
             throw new Error('Error updating user balance');
         }

@@ -19,7 +19,7 @@ CREATE TABLE users (
 CREATE TABLE shoes_cart (
     user_id INTEGER REFERENCES users(id),
     shoe_id INTEGER REFERENCES shoes(id),
-    price = (SELECT price FROM shoes WHERE shoes.id = shoes_cart.shoe_id) * quantity DECIMAL(10, 2)
+    price DECIMAL (10, 2), 
     quantity INTEGER,
     PRIMARY KEY (user_id, shoe_id)
 );
