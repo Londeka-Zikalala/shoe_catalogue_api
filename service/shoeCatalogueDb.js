@@ -103,19 +103,24 @@ function shoeCatalogue(db) {
         console.log(shoeID)
         return shoeID
     }
-    async function addToCart(email, imageURL, quantity) {
+    async function addToCart(email, imageURL, quantity, price) {
         try {
-            let userId = await getUserId(email)
-            let shoeId = await getShoeId(imageURL)
+            let userId = await getUserId(email);
+            let shoeId = await getShoeId(imageURL);
     
             // Check if the user already picked the shoe
             const alreadySelected = await db.oneOrNone('SELECT * FROM shoes_cart WHERE user_id = $1 AND shoe_id = $2', [userId, shoeId]);
+    
             if (alreadySelected) {
                 // Update quantity if item already exists in the cart
-                await db.none('UPDATE shoes_cart SET quantity = $1 WHERE user_id = $2 AND shoe_id = $3', [quantity, userId, shoeId]);
+                const newQuantity = alreadySelected.quantity + quantity;
+                const newPrice = price * newQuantity;
+    
+                await db.none('UPDATE shoes_cart SET quantity = $1, price = $2 WHERE user_id = $3 AND shoe_id = $4', [newQuantity, newPrice, userId, shoeId]);
             } else {
                 // Add new item to the cart
-                await db.none('INSERT INTO shoes_cart (user_id, shoe_id, quantity) VALUES ($1, $2, $3)', [userId, shoeId, quantity]);
+                const newPrice = price * quantity;
+                await db.none('INSERT INTO shoes_cart (user_id, shoe_id, quantity, price) VALUES ($1, $2, $3, $4)', [userId, shoeId, quantity, newPrice]);
             }
     
             return { success: true, message: 'Cart updated successfully' };
@@ -124,6 +129,7 @@ function shoeCatalogue(db) {
             return { success: false, message: 'Error updating cart' };
         }
     }
+    
     
     async function removeItemFromCart(email, shoeId) {
         try {
@@ -176,12 +182,12 @@ function shoeCatalogue(db) {
 
     async function checkout(email) {
         try {
-            // Get the user's cart 
+            // Get the user's cart
             const userCart = await getUserCart(email);
             const shoesInCart = userCart.cartItems;
+    
             // Get the total price
-            let total = userCart.totalPrice
-            
+            let total = userCart.totalPrice;
     
             // Check if the user's balance is enough
             let userBalance = await getUserBalance(email);
@@ -194,14 +200,14 @@ function shoeCatalogue(db) {
                 await removeItemFromCart(email, item.shoe_id);
             }
     
-            // Deduct total price from user's balance
+            // Deduct the total price from the user's balance
             let newBalance = userBalance - total;
             await updateUserBalance(email, newBalance);
     
             return { success: true, message: 'Checkout successful!' };
         } catch (error) {
             console.error('Error during checkout:', error);
-            return { success: false, message: 'Error during checkout' };
+            throw error;
         }
     }
 
