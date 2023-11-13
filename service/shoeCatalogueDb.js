@@ -36,7 +36,7 @@ function shoeCatalogue(db) {
 
     async function fetchSoldOutShoes(){
         try{
-            const soldOut = await db.manyOrNone('SELECT * FROM shoes WHERE in_stock =< 0')
+            const soldOut = await db.manyOrNone('SELECT * FROM shoes WHERE in_stock <= 0');
             return soldOut
         }catch(error){
             throw new Error('Error fetching shoes')

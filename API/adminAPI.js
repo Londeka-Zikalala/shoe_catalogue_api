@@ -56,7 +56,7 @@ function adminAPI(shoesdb){
     }
     async function getOutOfStockShoes (req,res){
         try{
-            const soldOut = await shoesdb.fethSoldOutShoes()
+            const soldOut = await shoesdb.fetchSoldOutShoes()
             res.json({
                 status: 'success',
                 data: soldOut

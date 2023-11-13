@@ -67,8 +67,8 @@ app.post('/api/users/checkout/:email', users.checkout)
 //Admin API
 app.post('/api/admin', admin.addShoes);
 app.post('/api/admin/sold', admin.deleteInStock);
-app.post('/api/admin/delete/:id', admin.removeEntireStock)
-app.get('/api/admin/soldout/:id', admin.getOutOfStockShoes)
+app.post('/api/admin/delete/:id', admin.removeEntireStock);
+app.get('/api/admin/soldout', admin.getOutOfStockShoes);
 //local host 
 const PORT = process.env.PORT || 3011
 
