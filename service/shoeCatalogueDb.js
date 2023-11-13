@@ -34,43 +34,57 @@ function shoeCatalogue(db) {
         return await db.manyOrNone('SELECT * FROM shoes WHERE size=$1 AND in_stock > 0', [shoeSize])
     }
 
+    async function fetchSoldOutShoes(){
+        try{
+            const soldOut = await db.manyOrNone('SELECT * FROM shoes WHERE in_stock =< 0')
+            return soldOut
+        }catch(error){
+            throw new Error('Error fetching shoes')
+        }
+    }
+
+
     async function addShoe(brandName, shoeSize, shoeColor, shoePrice, inStock, imageURL) {
         try {
             // Check if shoe exists
             const shoe = await db.oneOrNone('SELECT id FROM shoes WHERE image_url = $1', [imageURL]);
 
-            // If shoe does not exist, insert new shoe
-            if (!shoe) {
-                await db.none('INSERT INTO shoes (brand, size, color, price, in_stock, image_url) VALUES ($1, $2, $3 , $4, $5, $6)', [brandName, shoeSize, shoeColor, shoePrice, inStock, imageURL]);
+        if (shoe !== null) {
+        // Update in_stock for existing shoe
+        const newInStock = shoe.in_stock + inStock;
+        await db.none('UPDATE shoes SET in_stock = $1 WHERE image_url = $2', [newInStock,imageURL]);
             } else {
-                // Update in_stock for existing shoe
-                const newInStock = shoe.in_stock + inStock;
-                await db.none('UPDATE shoes SET in_stock = $1 WHERE image_url = $2', [newInStock,imageURL]);
+         // If shoe does not exist, insert new shoe
+        await db.none('INSERT INTO shoes (brand, size, color, price, in_stock, image_url) VALUES ($1, $2, $3 , $4, $5, $6)', [brandName, shoeSize, shoeColor, shoePrice, inStock, imageURL]);
             }
         } catch (error) {
             console.error(error.message);
 
         }
     }
-
-
 
     async function removeShoe(shoeId, quantity) {
         try {
             let stockAvailable = await db.one('SELECT in_stock FROM shoes WHERE id = $1', [shoeId]);
             
-            if (stockAvailable > 0) {
+            if (stockAvailable.in_stock > 0 && stockAvailable.in_stock >= quantity) {
                 // Reduce the stock by the specified quantity
                 await db.none('UPDATE shoes SET in_stock = in_stock - $1 WHERE id = $2', [quantity, shoeId]);
             }
-
-
-
+            
         } catch (error) {
             console.error(error.message);
 
         }
     }
+
+    async function deleteShoes(shoeId){
+        try{
+            await db.none('DELETE FROM shoes WHERE id = $1', [shoeId])
+        }catch(error){
+            throw new Error('Error deleting shoe')        }
+    }
+
     async function insertUser(username, email, password, balance) {
         try {
             // Check if user already exists
@@ -103,23 +117,25 @@ function shoeCatalogue(db) {
         console.log(shoeID)
         return shoeID
     }
-    async function addToCart(email, imageURL, quantity, price) {
+    async function addToCart(email, imageURL, quantity) {
         try {
             let userId = await getUserId(email);
             let shoeId = await getShoeId(imageURL);
     
             // Check if the user already picked the shoe
             const alreadySelected = await db.oneOrNone('SELECT * FROM shoes_cart WHERE user_id = $1 AND shoe_id = $2', [userId, shoeId]);
-    
+            // Get the shoe price 
+            let shoePrice = await db.one('SELECT price FROM shoes WHERE id = $1', [shoeId])
             if (alreadySelected) {
                 // Update quantity if item already exists in the cart
+
                 const newQuantity = alreadySelected.quantity + quantity;
-                const newPrice = price * newQuantity;
+                const newPrice = shoePrice.price * newQuantity;
     
                 await db.none('UPDATE shoes_cart SET quantity = $1, price = $2 WHERE user_id = $3 AND shoe_id = $4', [newQuantity, newPrice, userId, shoeId]);
             } else {
                 // Add new item to the cart
-                const newPrice = price * quantity;
+                const newPrice = shoePrice.price * quantity;
                 await db.none('INSERT INTO shoes_cart (user_id, shoe_id, quantity, price) VALUES ($1, $2, $3, $4)', [userId, shoeId, quantity, newPrice]);
             }
     
@@ -131,6 +147,7 @@ function shoeCatalogue(db) {
     }
     
     
+
     async function removeItemFromCart(email, shoeId) {
         try {
             let userId = await getUserId(email);
@@ -184,6 +201,8 @@ function shoeCatalogue(db) {
         try {
             // Get the user's cart
             const userCart = await getUserCart(email);
+           
+            //get cart items
             const shoesInCart = userCart.cartItems;
     
             // Get the total price
@@ -195,11 +214,12 @@ function shoeCatalogue(db) {
                 throw new Error('Insufficient funds');
             }
     
-            // Remove items from the cart
+            // Remove items from the cart and stock
             for (const item of shoesInCart) {
                 await removeItemFromCart(email, item.shoe_id);
+                await removeShoe(item.shoe_id, item.quantity)
             }
-    
+           
             // Deduct the total price from the user's balance
             let newBalance = userBalance - total;
             await updateUserBalance(email, newBalance);
@@ -213,12 +233,14 @@ function shoeCatalogue(db) {
 
     return {
         fetchAllShoes,
+        fetchSoldOutShoes,
         fetchShoesByBrandAndSize,
         fetchShoesByBrand,
         fetchShoesBySize,
         addShoe,
         getShoeId,
         removeShoe,
+        deleteShoes,
         insertUser,
         getUserId,
         addToCart,

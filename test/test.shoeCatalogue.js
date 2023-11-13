@@ -169,8 +169,35 @@ it('should add a new shoe to the database', async function (){
         const allShoes = await shoeService.fetchAllShoes();
 
         
-        assert.deepEqual(allShoes, [
+        assert.deepEqual(allShoes, [  {
+            id: 1,
+            color: 'red',
+            brand: 'Nike',
+            price: 1200.00,
+            size: 6,
+            in_stock: 10,
+            image_url: 'https://shoes.com/nike-red.jpg'
+        },
+        {
+            id: 2,
+            color: 'blue',
+            brand: 'Adidas',
+            price: 1000.00,
+            size: 7,
+            in_stock: 8,
+            image_url: 'https://shoes.com/adidas-blue.jpg'
+        },
+        {
+            id: 3,
+            color: 'black',
+            brand: 'Puma',
+            price: 800.00,
+            size: 8,
+            in_stock: 5,
+            image_url: 'https://shoes.com/puma-black.jpg'
+        },
             {
+                id:4,
                 brand: 'Reebok',
                 size: 5,
                 color: 'red-green',
@@ -178,6 +205,8 @@ it('should add a new shoe to the database', async function (){
                 in_stock: 5,
                 image_url: 'https://shoes.com/reebok-red-green.jpg'
             }
+
+        
         ]);
     }catch(error){
         console.error(error.message)

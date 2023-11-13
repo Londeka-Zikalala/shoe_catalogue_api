@@ -1,8 +1,8 @@
 function userAPI(shoesdb){
     async function registerUser(req, res) {
         try {
-            const { username, email, password } = req.body;
-            await shoesdb.insertUser(username, email, password);
+            const { username, email, password, balance } = req.body;
+            await shoesdb.insertUser(username, email, password, balance);
             res.json({ status: 'success', message: 'User registered successfully' });
         } catch (error) {
             res.json({ status: 'error', error: error.stack });
@@ -13,7 +13,6 @@ function userAPI(shoesdb){
             const userId = req.body.email;
             const shoeId = req.body.image_url;
             const quantity = req.body.quantity;
-
             const addToCartResult = await shoesdb.addToCart(userId, shoeId, quantity);
 
             res.json(addToCartResult);
@@ -44,9 +43,9 @@ try {
        
 async function checkout(req, res) {
     try {
-        const userId = req.params.userId; 
+        const userId = req.params.email; 
 
-        const checkoutResult = await shoeCatalogue.checkout(userId);
+        const checkoutResult = await shoesdb.checkout(userId);
         res.json(checkoutResult);
     } catch (error) {
         res.json({
