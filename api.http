@@ -28,8 +28,8 @@ POST http://localhost:3011/api/admin/sold
 Content-Type: application/json
 
 {   
-"id": 2,
-"quantity": 3
+"image_url": "https://th.bing.com/th/id/R.7734d8ce719e573ec2117680c5637e09?rik=mBRljcztdn4lpA&pid=ImgRaw&r=0",
+"quantity": 2
    }
 
 ###DELETE all the shoes from the selected Id
@@ -46,23 +46,24 @@ Content-Type: application/json
 "username": "Londeka",
 "password": "password00",
 "email": "LK@gmail.com",
-"balance": 10000
-
+"balance": 50000
    }
-
 ### add to cart
 POST http://localhost:3011/api/users/cart/
 Content-Type: application/json
 
 {   
 "image_url": "https://th.bing.com/th/id/R.7734d8ce719e573ec2117680c5637e09?rik=mBRljcztdn4lpA&pid=ImgRaw&r=0",
-"quantity": 3,
+"quantity": 2,
 "email": "LK@gmail.com"
    }
 
 ### get the cart 
 GET http://localhost:3011/api/users/cart/LK@gmail.com
     
+### get the user balance
+GET http://localhost:3011/api/users/LK@gmail.com
+
 ####Checkout 
 POST http://localhost:3011/api/users/checkout/LK@gmail.com
 

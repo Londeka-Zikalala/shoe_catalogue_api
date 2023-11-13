@@ -40,6 +40,22 @@ try {
 }
 };
 
+async function fetchUserBalance(req, res){
+    try {
+        const userId = req.params.email;
+
+        const userBalance = await shoesdb.getUserBalance(userId);
+        res.json({
+            status:'success',
+            data: userBalance
+        });
+    } catch (error) {
+        res.json({
+            status: "error",
+            error: error.stack
+        });
+    }
+}
        
 async function checkout(req, res) {
     try {
@@ -58,6 +74,7 @@ return{
     registerUser,
     addToCart,
     getCart,
+    fetchUserBalance,
     checkout
 }
 }

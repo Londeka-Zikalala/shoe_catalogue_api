@@ -26,7 +26,7 @@ function adminAPI(shoesdb){
 
     async function deleteInStock (req,res) {
         try{
-            const shoeId = req.body.id;
+            const shoeId = req.body.image_url;
             const shoeQuantity = req.body.quantity;
             await shoesdb.removeShoe(shoeId, shoeQuantity)
             res.json({

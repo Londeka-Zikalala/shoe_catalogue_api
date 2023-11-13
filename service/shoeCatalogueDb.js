@@ -47,7 +47,7 @@ function shoeCatalogue(db) {
     async function addShoe(brandName, shoeSize, shoeColor, shoePrice, inStock, imageURL) {
         try {
             // Check if shoe exists
-            const shoe = await db.oneOrNone('SELECT id FROM shoes WHERE image_url = $1', [imageURL]);
+            const shoe = await db.oneOrNone('SELECT * FROM shoes WHERE image_url = $1', [imageURL]);
 
         if (shoe !== null) {
         // Update in_stock for existing shoe
@@ -63,8 +63,10 @@ function shoeCatalogue(db) {
         }
     }
 
-    async function removeShoe(shoeId, quantity) {
+    async function removeShoe(imageURL, quantity) {
         try {
+           let shoeId = await getShoeId(imageURL)
+           console.log(shoeId)
             let stockAvailable = await db.one('SELECT in_stock FROM shoes WHERE id = $1', [shoeId]);
             
             if (stockAvailable.in_stock > 0 && stockAvailable.in_stock >= quantity) {
@@ -88,14 +90,23 @@ function shoeCatalogue(db) {
     async function insertUser(username, email, password, balance) {
         try {
             // Check if user already exists
-            const user = await db.oneOrNone('SELECT id FROM users WHERE email = $1', [email]);
+            const user = await db.oneOrNone('SELECT * FROM users WHERE email = $1', [email]);
     
             // If user does not exist, insert new user
             if (!user) {
                 await db.none('INSERT INTO users (username, email, password, balance) VALUES ($1, $2, $3, $4)', [username, email, password, balance]);
-            } else {
-                //return the user id
+            //get the id
                 return await getUserId(email)
+            } else {
+                let oldBalance = user.balance
+                console.log(oldBalance)
+                let newBalance = Number(user.balance) + balance;
+                 //update the balance
+                updateUserBalance(email, newBalance)
+
+                //get the user id
+               return await getUserId(email)
+               
             }
         } catch (error) {
             console.error(error.message);
@@ -107,21 +118,23 @@ function shoeCatalogue(db) {
     async function getUserId(email) {
         let userId = await db.oneOrNone('SELECT id FROM users WHERE email = $1', [email])
         let userID = userId.id
-        console.log(userID)
         return userID
     }
 
     async function getShoeId(imageURL) {
         let shoeId = await db.oneOrNone('SELECT id FROM shoes WHERE image_url = $1', [imageURL])
         let shoeID = shoeId.id;
-        console.log(shoeID)
         return shoeID
     }
     async function addToCart(email, imageURL, quantity) {
         try {
             let userId = await getUserId(email);
             let shoeId = await getShoeId(imageURL);
-    
+                  // Check if the shoe is in stock
+        let shoeStock = await db.one('SELECT in_stock FROM shoes WHERE id = $1', [shoeId]);
+        if (shoeStock.in_stock < quantity) {
+            throw new Error('Not enough stock');
+        }
             // Check if the user already picked the shoe
             const alreadySelected = await db.oneOrNone('SELECT * FROM shoes_cart WHERE user_id = $1 AND shoe_id = $2', [userId, shoeId]);
             // Get the shoe price 
@@ -184,7 +197,7 @@ function shoeCatalogue(db) {
         let userId = await getUserId(email);
     //get the cart items
         const cartItems = await db.manyOrNone(
-            'SELECT shoes.image_url AS imgUrl, shoes_cart.quantity, shoes.price FROM shoes_cart JOIN shoes ON shoes_cart.shoe_id = shoes.id WHERE shoes_cart.user_id = $1',
+            'SELECT shoes.image_url AS imgurl, shoes_cart.quantity, shoes.price FROM shoes_cart JOIN shoes ON shoes_cart.shoe_id = shoes.id WHERE shoes_cart.user_id = $1',
             [userId]
         );
     
@@ -195,6 +208,11 @@ function shoeCatalogue(db) {
         }
     
         return { cartItems, totalPrice };
+    }
+
+    async function deleteCart(email){
+        let userId = await getUserId(email)
+        await db.none('DELETE FROM shoes_cart WHERE user_id = $1', [userId])
     }
 
     async function checkout(email) {
@@ -216,8 +234,11 @@ function shoeCatalogue(db) {
     
             // Remove items from the cart and stock
             for (const item of shoesInCart) {
-                await removeItemFromCart(email, item.shoe_id);
-                await removeShoe(item.shoe_id, item.quantity)
+                var imageURL = item.imgurl;
+                var quant = item.quantity
+                console.log(imageURL, quant)
+                await removeShoe(imageURL,quant)
+                await deleteCart(email)
             }
            
             // Deduct the total price from the user's balance
@@ -245,6 +266,7 @@ function shoeCatalogue(db) {
         getUserId,
         addToCart,
         getUserCart,
+        deleteCart,
         getUserBalance,
         updateUserBalance,
         removeItemFromCart,

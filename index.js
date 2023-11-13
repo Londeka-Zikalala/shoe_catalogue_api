@@ -60,6 +60,7 @@ app.get('/api/shoes/size/:size', shoeAPI.getShoesBySize);
 app.get('/api/shoes/brand/:brand?/size/:size?', shoeAPI.getShoesBySizeAndBrand);
 //Users API
 app.post('/api/users', users.registerUser);
+app.get('/api/users/:email', users.fetchUserBalance)
 app.post('/api/users/cart', users.addToCart);
 app.get('/api/users/cart/:email', users.getCart);
 app.post('/api/users/checkout/:email', users.checkout)
