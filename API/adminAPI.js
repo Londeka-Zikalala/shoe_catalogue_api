@@ -23,6 +23,20 @@ function adminAPI(shoesdb){
             });
         }
     };
+    async function allShoesWithColorCode(req, res) {
+        try {
+            let allInStore = await shoesdb.fetchAllShoesWithColorCode();
+            res.json({
+                status: 'success',
+                data: allInStore
+            });
+        } catch (error) {
+            res.json({
+                status: "error",
+                error: error.stack
+            });
+        }
+    };
 
     async function deleteInStock (req,res) {
         try{
@@ -71,6 +85,7 @@ function adminAPI(shoesdb){
 
     return{
         addShoes,
+        allShoesWithColorCode,
         deleteInStock,
         removeEntireStock,
         getOutOfStockShoes,

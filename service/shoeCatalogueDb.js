@@ -42,7 +42,28 @@ function shoeCatalogue(db) {
             throw new Error('Error fetching shoes')
         }
     }
+    function getStockColorCodes(inStock){
+        if(inStock < 3){
+            return 'red'
+        }else if(inStock >= 3 && inStock < 5){
+            return 'orange'
+        }
+        else if(inStock > 5){
+            return 'green'
+        }
+    }
 
+async function fetchAllShoesWithColorCode(){
+    try{
+        const allShoes = await db.manyOrNone('SELECT * FROM shoes')
+        for (let i = 0; i < allShoes.length; i++) {
+            allShoes[i].colorCode = getStockColorCodes(allShoes[i].in_stock);
+        }
+        return allShoes
+    }catch(error){
+        console.error(error.message);
+    }
+}
 
     async function addShoe(brandName, shoeSize, shoeColor, shoePrice, inStock, imageURL) {
         try {
@@ -258,6 +279,7 @@ function shoeCatalogue(db) {
         fetchShoesByBrandAndSize,
         fetchShoesByBrand,
         fetchShoesBySize,
+        fetchAllShoesWithColorCode,
         addShoe,
         getShoeId,
         removeShoe,
