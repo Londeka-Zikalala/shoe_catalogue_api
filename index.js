@@ -66,7 +66,8 @@ app.get('/api/users/cart/:email', users.getCart);
 app.post('/api/users/checkout/:email', users.checkout)
 //Admin API
 app.post('/api/admin', admin.addShoes);
-app.get('api/admin', admin.allShoesWithColorCode);
+app.post('api/admin/stock', admin.allShoesWithColorCode);
+app.get('api/admin/stock', admin.allShoesWithColorCode);
 app.post('/api/admin/sold', admin.deleteInStock);
 app.post('/api/admin/delete/:id', admin.removeEntireStock);
 app.get('/api/admin/soldout', admin.getOutOfStockShoes);
