@@ -63,7 +63,9 @@ app.post('/api/users', users.registerUser);
 app.get('/api/users/:email', users.fetchUserBalance)
 app.post('/api/users/cart', users.addToCart);
 app.get('/api/users/cart/:email', users.getCart);
-app.post('/api/users/checkout/:email', users.checkout)
+app.post('/api/users/checkout/:email', users.checkout);
+app.post('/api/users/login', users.loginUser);
+app.post('/api/users/logout', users.userLogout);
 //Admin API
 app.post('/api/admin', admin.addShoes);
 app.get('api/admin', admin.allShoesWithColorCode);

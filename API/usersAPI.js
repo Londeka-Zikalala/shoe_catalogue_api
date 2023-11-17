@@ -1,4 +1,6 @@
 function userAPI(shoesdb){
+    
+    /************USER ENDPOINTS, LOGIN, SIGNUP AND LOGOUT********** */
     async function registerUser(req, res) {
         try {
             const { username, email, password, balance } = req.body;
@@ -8,6 +10,67 @@ function userAPI(shoesdb){
             res.json({ status: 'error', error: error.stack });
         }
     }
+
+    async function loginUser(req, res){
+        try{
+            const email = req.body.email; 
+            const password = req.body.password;
+            const user = await shoesdb.getUser(email)
+            if(user && password === user.password){
+                req.session.userId = user.id;
+                res.json({
+                    status: 'success',
+                    message:'User Logged In Succesfully!'
+                })
+            }else{
+                res.json({
+                    status:'error',
+                    message: 'Invalid Email Or Password'
+                })
+            }
+        }catch(error){
+            res.json({ status: 'error', error: error.stack });
+        }
+    };
+
+    async function userLogout(req, res){
+        try{
+            req.session.destroy(err =>{
+                if(err){
+                    return res.json({
+                        status: 'error',
+                        message: 'Failed To Logout User'
+                    })
+                }
+                res.clearCookie('connect.sid');
+                res.json({
+                    status: 'success',
+                    message: 'Logout Successful!'
+                })
+            })
+        }catch(error){
+            res.json({ status: 'error', error: error.stack });
+        }
+    };
+
+    async function fetchUserBalance(req, res){
+        try {
+            const userId = req.params.email;
+    
+            const userBalance = await shoesdb.getUserBalance(userId);
+            res.json({
+                status:'success',
+                data: userBalance
+            });
+        } catch (error) {
+            res.json({
+                status: "error",
+                error: error.stack
+            });
+        }
+    }
+
+    /*********CART AND CHECKOUT******* */
     async function addToCart(req, res) {
         try {
             const userId = req.body.email;
@@ -39,23 +102,6 @@ try {
     });
 }
 };
-
-async function fetchUserBalance(req, res){
-    try {
-        const userId = req.params.email;
-
-        const userBalance = await shoesdb.getUserBalance(userId);
-        res.json({
-            status:'success',
-            data: userBalance
-        });
-    } catch (error) {
-        res.json({
-            status: "error",
-            error: error.stack
-        });
-    }
-}
        
 async function checkout(req, res) {
     try {
@@ -70,6 +116,7 @@ async function checkout(req, res) {
         });
     }
 };
+
 return{
     registerUser,
     addToCart,

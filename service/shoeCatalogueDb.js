@@ -1,5 +1,5 @@
 function shoeCatalogue(db) {
-
+/**FECTHING AND ADDING SHOES*/
     async function fetchAllShoes() {
         const availableShoes = await db.manyOrNone('SELECT * FROM shoes WHERE in_stock > 0')
 
@@ -84,6 +84,12 @@ async function fetchAllShoesWithColorCode(){
         }
     }
 
+    async function getShoeId(imageURL) {
+        let shoeId = await db.oneOrNone('SELECT id FROM shoes WHERE image_url = $1', [imageURL])
+        let shoeID = shoeId.id;
+        return shoeID
+    }
+/***********REMOVING OR DELETING SHOES***************** */
     async function removeShoe(imageURL, quantity) {
         try {
            let shoeId = await getShoeId(imageURL)
@@ -108,6 +114,9 @@ async function fetchAllShoesWithColorCode(){
             throw new Error('Error deleting shoe')        }
     }
 
+    /************USER FUNCTIONS************** */
+
+    ///INSERT USER
     async function insertUser(username, email, password, balance) {
         try {
             // Check if user already exists
@@ -134,19 +143,40 @@ async function fetchAllShoesWithColorCode(){
         }
     }
     
-    
-
+/// GET USER ID
     async function getUserId(email) {
         let userId = await db.oneOrNone('SELECT id FROM users WHERE email = $1', [email])
         let userID = userId.id
         return userID
     }
-
-    async function getShoeId(imageURL) {
-        let shoeId = await db.oneOrNone('SELECT id FROM shoes WHERE image_url = $1', [imageURL])
-        let shoeID = shoeId.id;
-        return shoeID
+/////GET USER
+    async function getUser(email){
+        let user = await db.manyOrNone('SELECT * FROM users WHERE email = $1', [email]);
+        return user
     }
+    ///GET USER BALANCE
+    async function getUserBalance(email) {
+        try {
+            const user = await db.one('SELECT balance FROM users WHERE email = $1', [email]);
+            let userBalance = user.balance
+            return userBalance
+        } catch (error) {
+            throw new Error('Error fetching user balance');
+        }
+    }
+    /////UPDATE USER BALANCE
+    async function updateUserBalance(email, balance) {
+        try {
+            await db.none('UPDATE users SET balance = $1 WHERE email = $2', [balance, email]);
+        } catch (error) {
+            throw new Error('Error updating user balance');
+        }
+    }
+
+
+    /*******************CART AND CHECKOUT************************** */
+
+    ////ADD TO CART
     async function addToCart(email, imageURL, quantity) {
         try {
             let userId = await getUserId(email);
@@ -179,9 +209,7 @@ async function fetchAllShoesWithColorCode(){
             return { success: false, message: 'Error updating cart' };
         }
     }
-    
-    
-
+ /////REMOVE FROM CART
     async function removeItemFromCart(email, shoeId) {
         try {
             let userId = await getUserId(email);
@@ -196,24 +224,7 @@ async function fetchAllShoesWithColorCode(){
         }
     }
 
-    async function getUserBalance(email) {
-        try {
-            const user = await db.one('SELECT balance FROM users WHERE email = $1', [email]);
-            let userBalance = user.balance
-            return userBalance
-        } catch (error) {
-            throw new Error('Error fetching user balance');
-        }
-    }
-    
-    async function updateUserBalance(email, balance) {
-        try {
-            await db.none('UPDATE users SET balance = $1 WHERE email = $2', [balance, email]);
-        } catch (error) {
-            throw new Error('Error updating user balance');
-        }
-    }
-
+////GET CART
     async function getUserCart(email) {
         let userId = await getUserId(email);
     //get the cart items
@@ -230,12 +241,13 @@ async function fetchAllShoesWithColorCode(){
     
         return { cartItems, totalPrice };
     }
-
+////// DELETE CART
     async function deleteCart(email){
         let userId = await getUserId(email)
         await db.none('DELETE FROM shoes_cart WHERE user_id = $1', [userId])
     }
 
+////// CHECKOUT
     async function checkout(email) {
         try {
             // Get the user's cart
@@ -286,6 +298,7 @@ async function fetchAllShoesWithColorCode(){
         deleteShoes,
         insertUser,
         getUserId,
+        getUser,
         addToCart,
         getUserCart,
         deleteCart,
