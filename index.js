@@ -68,7 +68,8 @@ app.post('/api/users/login', users.loginUser);
 app.post('/api/users/logout', users.userLogout);
 //Admin API
 app.post('/api/admin', admin.addShoes);
-app.get('api/admin', admin.allShoesWithColorCode);
+app.post('/api/admin/stock', admin.allShoesWithColorCode);
+app.get('/api/admin/stock', admin.allShoesWithColorCode);
 app.post('/api/admin/sold', admin.deleteInStock);
 app.post('/api/admin/delete/:id', admin.removeEntireStock);
 app.get('/api/admin/soldout', admin.getOutOfStockShoes);
