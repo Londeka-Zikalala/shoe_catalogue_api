@@ -28,7 +28,7 @@ console.log(axios.isCancel('something'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(session({
-    secret: 'edeea0c7-8aed-40c3-afab-48a3c5cdd878',
+    secret: process.env.SECRET_KEY,
     resave: false,
     saveUninitialized: true
   }));
@@ -58,6 +58,7 @@ app.get('/api/shoes', shoeAPI.allShoes);
 app.get('/api/shoes/brand/:brand', shoeAPI.getShoesByBrand);
 app.get('/api/shoes/size/:size', shoeAPI.getShoesBySize);
 app.get('/api/shoes/brand/:brand?/size/:size?', shoeAPI.getShoesBySizeAndBrand);
+
 //Users API
 app.post('/api/users', users.registerUser);
 app.get('/api/users/:email', users.fetchUserBalance)
@@ -66,6 +67,9 @@ app.get('/api/users/cart/:email', users.getCart);
 app.post('/api/users/checkout/:email', users.checkout);
 app.post('/api/users/login', users.loginUser);
 app.post('/api/users/logout', users.userLogout);
+app.post('/api/users/type', users.userRole);
+app.get('/api/users/type', users.userRole);
+
 //Admin API
 app.post('/api/admin', admin.addShoes);
 app.post('/api/admin/stock', admin.allShoesWithColorCode);
@@ -73,6 +77,7 @@ app.get('/api/admin/stock', admin.allShoesWithColorCode);
 app.post('/api/admin/sold', admin.deleteInStock);
 app.post('/api/admin/delete/:id', admin.removeEntireStock);
 app.get('/api/admin/soldout', admin.getOutOfStockShoes);
+
 //local host 
 const PORT = process.env.PORT || 3011
 

@@ -69,8 +69,10 @@ describe('shoeCatalogue function', function () {
 
     afterEach(async function () {
         // Clean up mock after data each test
-        await db.none('TRUNCATE TABLE shoes RESTART IDENTITY CASCADE');
-        await db.none('TRUNCATE TABLE users RESTART IDENTITY CASCADE');
+        await shoeService.deleteShoes(mockShoe1.id);
+        await shoeService.deleteShoes(mockShoe2.id)
+        await shoeService.deleteShoes(mockShoe3.id)
+        await db.none('DELETE FROM users WHERE id > 1');
     });
 
     // Test the fetchAllShoes function

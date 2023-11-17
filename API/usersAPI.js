@@ -1,11 +1,35 @@
 function userAPI(shoesdb){
-    
+
     /************USER ENDPOINTS, LOGIN, SIGNUP AND LOGOUT********** */
     async function registerUser(req, res) {
         try {
             const { username, email, password, balance } = req.body;
-            await shoesdb.insertUser(username, email, password, balance);
-            res.json({ status: 'success', message: 'User registered successfully' });
+           
+            // Regex for validating an email address
+        const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
+
+        // Regex for validating a username (only letters and numbers)
+        const usernameRegex = /^[a-zA-Z0-9]+$/;
+
+        if (!emailRegex.test(email)) {
+            return res.json({ status: 'error', message: 'Invalid email format' });
+        }
+
+        if (!usernameRegex.test(username)) {
+            return res.json({ status: 'error', message: 'Username must only contain letters and numbers' });
+        }
+        ///Check if the username or password are already taken
+        const user = await shoesdb.getUser(email)
+
+        if(user && username === user.username){
+            return res.json({ status: 'error', message: 'Username taken' });
+        } else if(user && email === user.email ){
+            return res.json({ status: 'error', message: 'Email already registered' })
+        }
+
+        await shoesdb.insertUser(username, email, password, balance);
+        res.json({ status: 'success', message: 'User registered successfully' });
+
         } catch (error) {
             res.json({ status: 'error', error: error.stack });
         }
@@ -53,6 +77,29 @@ function userAPI(shoesdb){
         }
     };
 
+    async function userRole(req, res){
+       try{
+        let authenticatedUser = await registerUser(req, res);
+        let userType;
+        if(authenticatedUser){
+            if(authenticatedUser.username.includes('Admin')){
+                userType = 'admin'
+            }
+            else {
+                userType = 'user'
+            }
+
+            return userType
+        }
+        res.json({ 
+            status: 'success',
+            data: userType })
+
+       }catch(error){
+            res.json({ status: 'error', error: error.stack });
+        }
+        
+    }
     async function fetchUserBalance(req, res){
         try {
             const userId = req.params.email;
@@ -119,6 +166,9 @@ async function checkout(req, res) {
 
 return{
     registerUser,
+    loginUser,
+    userLogout,
+    userRole,
     addToCart,
     getCart,
     fetchUserBalance,

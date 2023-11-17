@@ -1,16 +1,16 @@
 ##All shoes
 GET http://localhost:3011/api/shoes
 
-### Shoe by brand and size
+## Shoe by brand and size
 GET http://localhost:3011/api/shoes/brand//size/6
 
-###Shoes by brand 
+##Shoes by brand 
 GET http://localhost:3011/api/shoes/brand/Steve-Madden
 
-### Shoes by size
+## Shoes by size
 GET http://localhost:3011/api/shoes/size/7
 
-### Add a shoe
+## Add a shoe
 POST  http://localhost:3011/api/admin
 Content-Type: application/json
 
@@ -21,9 +21,9 @@ Content-Type: application/json
 "size": 6,
 "in_stock": 5,
 "image_url": "https://th.bing.com/th/id/R.7734d8ce719e573ec2117680c5637e09?rik=mBRljcztdn4lpA&pid=ImgRaw&r=0"
-   }
+}
 
-### Remove a shoe from stock
+## Remove a shoe from stock 
 POST http://localhost:3011/api/admin/sold
 Content-Type: application/json
 
@@ -32,23 +32,33 @@ Content-Type: application/json
 "quantity": 2
    }
 
-###DELETE all the shoes from the selected Id
+##DELETE all the shoes from the selected Id
 POST http://localhost:3011/api/admin/delete/2
 
-#### Get soldout shoes
+## Get soldout shoes
 GET  http://localhost:3011/api/admin/soldout
 
-### register a user 
+## register a user 
 POST http://localhost:3011/api/users
 Content-Type: application/json
 
 {   
 "username": "Londeka",
-"password": "password00",
-"email": "LK@gmail.com",
+"password": "password01",
+"email": "LondK@gmail.com",
 "balance": 50000
-   }
-### add to cart
+}
+
+##login 
+POST http://localhost:3011/api/users/login
+Content-Type: application/json
+
+{   
+"email": "LondK@gmail.com",
+"password": "password01"
+}
+
+##add to cart
 POST http://localhost:3011/api/users/cart/
 Content-Type: application/json
 
@@ -56,14 +66,17 @@ Content-Type: application/json
 "image_url": "https://th.bing.com/th/id/R.7734d8ce719e573ec2117680c5637e09?rik=mBRljcztdn4lpA&pid=ImgRaw&r=0",
 "quantity": 5,
 "email": "LK@gmail.com"
-   }
+}
 
-### get the cart 
-GET http://localhost:3011/api/users/cart/LK@gmail.com
-    
-### get the user balance
-GET http://localhost:3011/api/users/LK@gmail.com
+## get the cart 
+GET http://localhost:3011/api/users/cart/LondK@gmail.com  
 
-####Checkout 
-POST http://localhost:3011/api/users/checkout/LK@gmail.com
+## get the user balance
+GET http://localhost:3011/api/users/LondK@gmail.com
 
+##Checkout 
+POST http://localhost:3011/api/users/checkout/LondK@gmail.com
+
+## Logout
+POST http://localhost:3011/api/users/Logout
+Content-Type: application/json
