@@ -46,9 +46,9 @@ function userAPI(shoesdb){
             const user = await shoesdb.getUser(email)
             for (var i = 0; i<user.length; i++){
                 var fetchedUser = user[0]
-                const match1 = await bcrypt.compare(password, fetchedUser.password);
-                const match2 = await bcrypt.compare(email, fetchedUser.email);
-            if(match1 && match2 )
+                const match = await bcrypt.compare(password, fetchedUser.password);
+            
+            if(match && eamil === fetchedUser.email)
                 {
                     req.session.userId = fetchedUser.id;
                     res.json({
@@ -56,7 +56,6 @@ function userAPI(shoesdb){
                         message:'User Logged In Succesfully!'
                     })
                 }
-                return;
             }
             res.json({
                 status:'error',
