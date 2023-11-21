@@ -45,7 +45,7 @@ function userAPI(shoesdb){
             const password = req.body.password;
             const user = await shoesdb.getUser(email)
             for (var i = 0; i<user.length; i++){
-                var fetchedUser = user[0]
+                var fetchedUser = user[i]
                 const match = await bcrypt.compare(password, fetchedUser.password);
             
             if(match && eamil === fetchedUser.email)
