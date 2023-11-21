@@ -72,7 +72,7 @@ async function fetchAllShoesWithColorCode(){
 
         if (shoe !== null) {
         // Update in_stock for existing shoe
-        const newInStock = shoe.in_stock + inStock;
+        const newInStock = Number(shoe.in_stock) + Number(inStock);
         await db.none('UPDATE shoes SET in_stock = $1 WHERE image_url = $2', [newInStock,imageURL]);
             } else {
          // If shoe does not exist, insert new shoe
