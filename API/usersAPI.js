@@ -39,34 +39,33 @@ function userAPI(shoesdb){
         }
     }
 
-    async function loginUser(req, res){
-        try{
-            const email = req.body.email; 
-            const password = req.body.password;
-            const user = await shoesdb.getUser(email)
-            for (var i = 0; i<user.length; i++){
-                var fetchedUser = user[i]
-                const match = await bcrypt.compare(password, fetchedUser.password);
-            
-            if(match && email === fetchedUser.email)
-                {
-                    req.session.userId = fetchedUser.id;
-                    res.json({
-                        status: 'success',
-                        message:'User Logged In Succesfully!'
-                    })
-                }
-            }
-            res.json({
-                status:'error',
-                message: 'Invalid Email Or Password'
-            })
-         
-        }catch(error){
-            res.json({ status: 'error', error: error.stack });
-        }
-    };
+ async function loginUser(req, res) {
+    try {
+        const email = req.body.email;
+        const password = req.body.password;
+        const user = await shoesdb.getUser(email);
 
+        for (let i = 0; i < user.length; i++) {
+            const fetchedUser = user[i];
+            const match = await bcrypt.compare(password, fetchedUser.password);
+
+            if (match && email === fetchedUser.email) {
+                req.session.userId = fetchedUser.id;
+                return res.json({
+                    status: 'success',
+                    message: 'User Logged In Successfully!'
+                });
+            }
+        }
+
+        res.json({
+            status: 'error',
+            message: 'Invalid Email Or Password'
+        });
+    } catch (error) {
+        res.json({ status: 'error', error: error.stack });
+    }
+}
     async function userLogout(req, res){
         try{
             req.session.destroy(err =>{
