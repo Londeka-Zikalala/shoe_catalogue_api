@@ -48,7 +48,7 @@ function userAPI(shoesdb){
                 var fetchedUser = user[i]
                 const match = await bcrypt.compare(password, fetchedUser.password);
             
-            if(match && eamil === fetchedUser.email)
+            if(match && email === fetchedUser.email)
                 {
                     req.session.userId = fetchedUser.id;
                     res.json({
