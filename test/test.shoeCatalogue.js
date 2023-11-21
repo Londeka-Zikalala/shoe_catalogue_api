@@ -50,6 +50,7 @@ describe('shoeCatalogue function', function () {
         balance:4400.00
 
     };
+   
 
     const mockUser2 = {
         username: 'User2',
@@ -64,6 +65,8 @@ describe('shoeCatalogue function', function () {
         await shoeService.addShoe( mockShoe2.brand,mockShoe2.size,mockShoe2.color,mockShoe2.price,mockShoe1.in_stock, mockShoe2.image_url);
         await shoeService.addShoe( mockShoe3.brand,mockShoe3.size,mockShoe3.color,mockShoe3.price,mockShoe3.in_stock, mockShoe3.image_url);
         await shoeService.insertUser(mockUser1.username, mockUser1.email, mockUser1.password, mockUser1.balance);
+        const user = await shoeService.getUser(mockUser1.email);
+        console.log(user)
         await shoeService.insertUser(mockUser2.username, mockUser2.email, mockUser2.password,mockUser2.balance );
     });
 
@@ -267,6 +270,28 @@ it('should subtract a specific quantity when it is above 0 from the in_stock in 
         console.error(error.message)
     }
 });
+
+
+// //Test for the getUser function
+// it('should fetch a user by email from the database', async function () {
+//     try{
+//         // Call the getUser function
+//         const user = await shoeService.getUser(mockUser1.email);
+
+//         assert.deepEqual(user, [
+//             {
+//                 id: 1,
+//                 username: 'User1',
+//                 email: 'k@gmail.com',
+//                 password: 'password1',
+//                 balance: 4400.00
+//             }
+//         ]);
+//     }catch(error){
+//         console.error(error.message)
+//     }
+// });
+
 //Test for the addToCart function 
 it('should add an item to a cart',async function(){
   

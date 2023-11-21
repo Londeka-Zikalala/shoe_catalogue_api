@@ -152,6 +152,7 @@ async function fetchAllShoesWithColorCode(){
 /////GET USER
     async function getUser(email){
         let user = await db.manyOrNone('SELECT * FROM users WHERE email = $1', [email]);
+        console.log(user)
         return user
     }
     ///GET USER BALANCE

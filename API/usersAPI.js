@@ -1,3 +1,5 @@
+import bcrypt from 'bcrypt';
+const saltRounds = 10;
 function userAPI(shoesdb){
 
     /************USER ENDPOINTS, LOGIN, SIGNUP AND LOGOUT********** */
@@ -20,14 +22,16 @@ function userAPI(shoesdb){
         }
         ///Check if the username or password are already taken
         const user = await shoesdb.getUser(email)
-
-        if(user && username === user.username){
+        for (var i = 0; i<user.length; i++){
+            var fetchedUser = user[i]
+        if(fetchedUser && username === fetchedUser.username){
             return res.json({ status: 'error', message: 'Username taken' });
-        } else if(user && email === user.email ){
+        } else if(fetchedUser && email === fetchedUser.email ){
             return res.json({ status: 'error', message: 'Email already registered' })
         }
-
-        await shoesdb.insertUser(username, email, password, balance);
+    }
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+        await shoesdb.insertUser(username, email, hashedPassword, balance);
         res.json({ status: 'success', message: 'User registered successfully' });
 
         } catch (error) {
@@ -40,18 +44,23 @@ function userAPI(shoesdb){
             const email = req.body.email; 
             const password = req.body.password;
             const user = await shoesdb.getUser(email)
-            if(user && password === user.password){
-                req.session.userId = user.id;
-                res.json({
-                    status: 'success',
-                    message:'User Logged In Succesfully!'
-                })
-            }else{
-                res.json({
-                    status:'error',
-                    message: 'Invalid Email Or Password'
-                })
+            for (var i = 0; i<user.length; i++){
+                var fetchedUser = user[i]
+                const match = await bcrypt.compare(password, fetchedUser.password);
+            if(match)
+                {
+                    req.session.userId = fetchedUser.id;
+                    res.json({
+                        status: 'success',
+                        message:'User Logged In Succesfully!'
+                    })
+                }
             }
+            res.json({
+                status:'error',
+                message: 'Invalid Email Or Password'
+            })
+         
         }catch(error){
             res.json({ status: 'error', error: error.stack });
         }

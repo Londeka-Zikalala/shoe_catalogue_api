@@ -1,7 +1,7 @@
 ##All shoes
 GET http://localhost:3011/api/shoes
 
-## Shoe by brand and size
+##Shoe by brand and size
 GET http://localhost:3011/api/shoes/brand//size/6
 
 ##Shoes by brand 
