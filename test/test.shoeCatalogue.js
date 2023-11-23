@@ -65,8 +65,14 @@ describe('shoeCatalogue function', function () {
         await shoeService.addShoe( mockShoe2.brand,mockShoe2.size,mockShoe2.color,mockShoe2.price,mockShoe1.in_stock, mockShoe2.image_url);
         await shoeService.addShoe( mockShoe3.brand,mockShoe3.size,mockShoe3.color,mockShoe3.price,mockShoe3.in_stock, mockShoe3.image_url);
         await shoeService.insertUser(mockUser1.username, mockUser1.email, mockUser1.password, mockUser1.balance);
-        const user = await shoeService.getUser(mockUser1.email);
-        console.log(user)
+    const email = mockUser1.email;
+    const imageURL1 = mockShoe1.image_url;
+    var mockShoe1Price = await db.one('SELECT price FROM shoes WHERE image_url = $1', ['https://shoes.com/nike-red.jpg']);
+    const quantity = 2;
+    await shoeService.addToCart(email, imageURL1, quantity, mockShoe1Price)
+
+  const cart1= await shoeService.getUserCart(email); 
+  console.log(cart1)
         await shoeService.insertUser(mockUser2.username, mockUser2.email, mockUser2.password,mockUser2.balance );
     });
 

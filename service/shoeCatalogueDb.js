@@ -206,8 +206,8 @@ async function fetchAllShoesWithColorCode(){
     
             return { success: true, message: 'Cart updated successfully' };
         } catch (error) {
-            console.error('Error updating cart:', error);
-            return { success: false, message: 'Error updating cart' };
+            console.error(error.message, error);
+            return { success: false, message: error.message };
         }
     }
  /////REMOVE FROM CART
