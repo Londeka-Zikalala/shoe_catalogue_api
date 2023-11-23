@@ -53,7 +53,8 @@ function userAPI(shoesdb){
                 req.session.userId = fetchedUser.id;
                 return res.json({
                     status: 'success',
-                    message: 'User Logged In Successfully!'
+                    message: 'User Logged In Successfully!',
+                    fetchedUser
                 });
             }
         }
@@ -87,18 +88,18 @@ function userAPI(shoesdb){
     };
 
     async function userRole(req, res){
-       try{
-        let authenticatedUser = await registerUser(req, res);
-        let userType;
-        if(authenticatedUser){
-            if(authenticatedUser.username.includes('Admin')){
+        try{
+            let email = req.body.email;
+            let user = await shoesdb.getUser(email);
+            let userType;
+            for (let i = 0; i < user.length; i++) {
+                const fetchedUser = user[i];
+        if(fetchedUser && fetchedUser.email.startsWith('storeAdmin')){
                 userType = 'admin'
             }
             else {
                 userType = 'user'
             }
-
-            return userType
         }
         res.json({ 
             status: 'success',

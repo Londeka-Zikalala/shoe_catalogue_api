@@ -1,16 +1,16 @@
 ##All shoes
 GET http://localhost:3011/api/shoes
 
-##Shoe by brand and size
+###Shoe by brand and size
 GET http://localhost:3011/api/shoes/brand//size/6
 
-##Shoes by brand 
+###Shoes by brand 
 GET http://localhost:3011/api/shoes/brand/Steve-Madden
 
-## Shoes by size
+### Shoes by size
 GET http://localhost:3011/api/shoes/size/7
 
-## Add a shoe
+### Add a shoe
 POST  http://localhost:3011/api/admin
 Content-Type: application/json
 
@@ -23,7 +23,7 @@ Content-Type: application/json
 "image_url": "https://th.bing.com/th/id/R.7734d8ce719e573ec2117680c5637e09?rik=mBRljcztdn4lpA&pid=ImgRaw&r=0"
 }
 
-## Remove a shoe from stock 
+### Remove a shoe from stock 
 POST http://localhost:3011/api/admin/sold
 Content-Type: application/json
 
@@ -43,40 +43,48 @@ POST http://localhost:3011/api/users
 Content-Type: application/json
 
 {   
-"username": "Londeka",
+"username": "Thandeka",
 "password": "password01",
-"email": "LondK@gmail.com",
+"email": "ThandekaMk@gmail.com",
 "balance": 50000
 }
 
-##login 
+###login 
 POST http://localhost:3011/api/users/login
 Content-Type: application/json
 
 {   
-"email": "LondK@gmail.com",
+"email": "ThandekaMk@gmail.com",
 "password": "password01"
 }
 
-##add to cart
+###add to cart
 POST http://localhost:3011/api/users/cart/
 Content-Type: application/json
 
 {   
 "image_url": "https://th.bing.com/th/id/R.7734d8ce719e573ec2117680c5637e09?rik=mBRljcztdn4lpA&pid=ImgRaw&r=0",
 "quantity": 5,
-"email": "LK@gmail.com"
+"email": "ThandekaMk@gmail.com"
 }
 
-## get the cart 
-GET http://localhost:3011/api/users/cart/LondK@gmail.com  
+### get the cart 
+GET http://localhost:3011/api/users/cart/ThandekaMk@gmail.com 
 
-## get the user balance
+### get the user balance
 GET http://localhost:3011/api/users/LondK@gmail.com
 
-##Checkout 
+###Checkout 
 POST http://localhost:3011/api/users/checkout/LondK@gmail.com
 
-## Logout
+### Logout
 POST http://localhost:3011/api/users/Logout
+
+### User Type
+GET http://localhost:3011/api/users/type
 Content-Type: application/json
+
+{   
+"email": "ThandekaMk@gmail.com",
+"password": "password01"
+}

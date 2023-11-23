@@ -179,6 +179,7 @@ async function fetchAllShoesWithColorCode(){
 
     ////ADD TO CART
     async function addToCart(email, imageURL, quantity) {
+        console.log(email, imageURL, quantity)
         try {
             let userId = await getUserId(email);
             let shoeId = await getShoeId(imageURL);
@@ -194,7 +195,7 @@ async function fetchAllShoesWithColorCode(){
             if (alreadySelected) {
                 // Update quantity if item already exists in the cart
 
-                const newQuantity = alreadySelected.quantity + quantity;
+                const newQuantity = Number(alreadySelected.quantity) + Number(quantity);
                 const newPrice = shoePrice.price * newQuantity;
     
                 await db.none('UPDATE shoes_cart SET quantity = $1, price = $2 WHERE user_id = $3 AND shoe_id = $4', [newQuantity, newPrice, userId, shoeId]);
@@ -270,13 +271,12 @@ async function fetchAllShoesWithColorCode(){
             for (const item of shoesInCart) {
                 var imageURL = item.imgurl;
                 var quant = item.quantity
-                console.log(imageURL, quant)
                 await removeShoe(imageURL,quant)
                 await deleteCart(email)
             }
            
             // Deduct the total price from the user's balance
-            let newBalance = userBalance - total;
+            let newBalance = Number(userBalance) - Number(total);
             await updateUserBalance(email, newBalance);
     
             return { success: true, message: 'Checkout successful!' };
