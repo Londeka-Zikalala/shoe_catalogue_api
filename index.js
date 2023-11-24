@@ -19,14 +19,11 @@ const shoeAPI = shoesAPI(shoesdb)
 const users = userAPI(shoesdb)
 const admin = adminAPI(shoesdb)
 
-// Set the Permissions-Policy header
-app.use((req, res, next) => {
-  res.setHeader('Permissions-Policy', 'interest-cohort=()');
-  next();
-});
-
 //cors middleware
-app.use(cors())
+app.use(cors({
+  origin: ['http://localhost:3000', 'https://londeka-zikalala.github.io/shoe_catalogue/'],
+  credentials: true
+}));
 
 //axios 
 console.log(axios.isCancel('something'));
