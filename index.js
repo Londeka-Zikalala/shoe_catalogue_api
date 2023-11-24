@@ -21,7 +21,7 @@ const admin = adminAPI(shoesdb)
 
 //cors middleware
 app.use(cors({
-  origin: ['http://localhost:3000', 'https://londeka-zikalala.github.io/shoe_catalogue/'],
+  origin: ['http://localhost:3000', 'https://londeka-zikalala.github.io/shoe_catalogue/', 'https://londeka-zikalala.github.io/shoe_catalogue/usercart.html'],
   credentials: true
 }));
 
